@@ -5,63 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>キャラ選択画面</title>
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #f5f5f5;
-      text-align: center;
-    }
-    h1 {
-      margin-top: 20px;
-    }
-    .container {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
-    .character {
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .character:hover {
-      transform: scale(1.05);
-    }
-    .character img {
-      width: 200px;
-      height: auto;
-      display: block;
-    }
-    .name {
-      font-weight: bold;
-      padding: 10px;
-      background: #fff;
-    }
+    body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; text-align: center; }
+    h1 { margin-top: 20px; }
+    .container { display: flex; flex-direction: row; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; }
+    .character { border: 2px solid #ccc; border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; }
+    .character:hover { transform: scale(1.05); }
+    .character img { width: 200px; height: auto; display: block; }
+    .name { font-weight: bold; padding: 10px; background: #fff; }
   </style>
 </head>
 <body>
   <h1>キャラクターを選んでね！</h1>
   <div class="container">
-    <div class="character" onclick="selectCharacter('シャオラン')">
+    <div class="character" onclick="selectCharacter('シャオラン', 'shaoran_web.JPG')">
       <img src="shaoran_web.JPG" alt="シャオラン">
       <div class="name">シャオラン</div>
     </div>
-    <div class="character" onclick="selectCharacter('ゆい')">
+    <div class="character" onclick="selectCharacter('ゆい', 'yuii_web.JPG')">
       <img src="yuii_web.JPG" alt="ゆい">
       <div class="name">ゆい</div>
     </div>
   </div>
 
   <script>
-    function selectCharacter(name) {
-      console.log(`選ばれたキャラ：${name}`);
-      alert(`${name} を選びました！`);
-      // 次ステップへ移動の処理などここに追加していきます
+    function selectCharacter(name, image) {
+      localStorage.setItem("selectedName", name);
+      localStorage.setItem("selectedImage", image);
+      window.location.href = "stage.html";
     }
   </script>
 </body>
