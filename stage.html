@@ -62,7 +62,7 @@
   <img id="character" src="" alt="キャラ画像">
 
   <script>
-    const name = localStorage.getItem("selectedName");
+    // キャラ読み込み
     const image = localStorage.getItem("selectedImage");
     const character = document.getElementById("character");
 
@@ -73,26 +73,26 @@
       window.location.href = "index.html";
     }
 
-    // 花びら生成
+    // ジャンプ処理
+    character.addEventListener("click", () => {
+      if (!character.classList.contains("jump")) {
+        character.classList.add("jump");
+        setTimeout(() => character.classList.remove("jump"), 600);
+      }
+    });
+
+    // 花びらを作る
     function createPetal() {
       const petal = document.createElement("div");
       petal.className = "petal";
       petal.style.left = Math.random() * window.innerWidth + "px";
-      petal.style.animationDuration = 3 + Math.random() * 2 + "s";
+      petal.style.animationDuration = (3 + Math.random() * 2) + "s";
       document.body.appendChild(petal);
       setTimeout(() => petal.remove(), 6000);
     }
-    setInterval(createPetal, 400);
 
-    // ジャンプアクション
-    character.addEventListener("click", () => {
-      if (!character.classList.contains("jump")) {
-        character.classList.add("jump");
-        setTimeout(() => {
-          character.classList.remove("jump");
-        }, 600);
-      }
-    });
+    // 花びらを定期的に落とす
+    setInterval(createPetal, 400);
   </script>
 </body>
 </html>
