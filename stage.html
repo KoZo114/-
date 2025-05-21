@@ -11,7 +11,7 @@
       height: 100vh;
       overflow: hidden;
       position: relative;
-      background-image: url('https://images.unsplash.com/photo-1554797589-7241bb691973?auto=format&fit=crop&w=1600&q=80'); /* 桜の背景（Unsplashフリー素材） */
+      background-image: url('https://cdn.pixabay.com/photo/2020/04/16/10/56/sakura-5050974_1280.jpg');
       background-size: cover;
       background-position: center;
       font-family: sans-serif;
@@ -22,21 +22,23 @@
       left: 50%;
       transform: translateX(-50%);
       max-height: 40vh;
+      z-index: 5;
     }
     .petal {
       position: absolute;
-      width: 40px;
-      height: 40px;
-      background-image: url('https://cdn.pixabay.com/photo/2020/01/17/17/35/cherry-blossom-4772325_960_720.png');
+      width: 30px;
+      height: 30px;
+      background-image: url('https://cdn.pixabay.com/photo/2020/04/15/08/25/sakura-5044560_1280.png');
       background-size: contain;
       background-repeat: no-repeat;
+      pointer-events: none;
       animation: fall linear;
+      z-index: 1;
     }
-
     @keyframes fall {
       0% {
         transform: translateY(-50px) rotate(0deg);
-        opacity: 0;
+        opacity: 0.4;
       }
       100% {
         transform: translateY(100vh) rotate(360deg);
@@ -60,22 +62,19 @@
       window.location.href = "index.html";
     }
 
-    // 花びら生成
     function createPetal() {
       const petal = document.createElement("div");
       petal.className = "petal";
       petal.style.left = Math.random() * window.innerWidth + "px";
       petal.style.animationDuration = 3 + Math.random() * 2 + "s";
-      petal.style.opacity = Math.random();
       document.body.appendChild(petal);
 
       setTimeout(() => {
         petal.remove();
-      }, 5000);
+      }, 6000);
     }
 
-    // 花びらを一定間隔で落とす
-    setInterval(createPetal, 500);
+    setInterval(createPetal, 400);
   </script>
 </body>
 </html>
