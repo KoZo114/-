@@ -23,7 +23,18 @@
       transform: translateX(-50%);
       max-height: 40vh;
       z-index: 5;
+      transition: bottom 0.3s ease;
     }
+    #character.jump {
+      animation: jump 0.6s ease;
+    }
+    @keyframes jump {
+      0%   { transform: translateX(-50%) translateY(0); }
+      30%  { transform: translateX(-50%) translateY(-60px); }
+      60%  { transform: translateX(-50%) translateY(-60px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
     .petal {
       position: absolute;
       width: 30px;
@@ -62,19 +73,26 @@
       window.location.href = "index.html";
     }
 
+    // 花びら生成
     function createPetal() {
       const petal = document.createElement("div");
       petal.className = "petal";
       petal.style.left = Math.random() * window.innerWidth + "px";
       petal.style.animationDuration = 3 + Math.random() * 2 + "s";
       document.body.appendChild(petal);
-
-      setTimeout(() => {
-        petal.remove();
-      }, 6000);
+      setTimeout(() => petal.remove(), 6000);
     }
-
     setInterval(createPetal, 400);
+
+    // ジャンプアクション
+    character.addEventListener("click", () => {
+      if (!character.classList.contains("jump")) {
+        character.classList.add("jump");
+        setTimeout(() => {
+          character.classList.remove("jump");
+        }, 600);
+      }
+    });
   </script>
 </body>
 </html>
