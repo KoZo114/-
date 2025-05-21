@@ -16,6 +16,7 @@
       background-position: center;
       font-family: sans-serif;
     }
+
     #character {
       position: absolute;
       bottom: 20px;
@@ -25,9 +26,11 @@
       z-index: 5;
       transition: bottom 0.3s ease;
     }
+
     #character.jump {
       animation: jump 0.6s ease;
     }
+
     @keyframes jump {
       0%   { transform: translateX(-50%) translateY(0); }
       30%  { transform: translateX(-50%) translateY(-60px); }
@@ -46,6 +49,7 @@
       animation: fall linear;
       z-index: 1;
     }
+
     @keyframes fall {
       0% {
         transform: translateY(-50px) rotate(0deg);
@@ -56,14 +60,7 @@
         opacity: 1;
       }
     }
-  </style>
-</head>
-<body>
-  <img id="character" src="" alt="キャラ画像">
-  <!-- スコア表示 -->
-  <div id="score">スコア: 0</div>
 
-  <style>
     #score {
       position: fixed;
       top: 10px;
@@ -77,6 +74,10 @@
       z-index: 10;
     }
   </style>
+</head>
+<body>
+  <img id="character" src="" alt="キャラ画像">
+  <div id="score">スコア: 0</div>
 
   <script>
     // キャラ読み込み
@@ -90,6 +91,15 @@
       window.location.href = "index.html";
     }
 
+    // スコア管理
+    let score = 0;
+    const scoreDisplay = document.getElementById("score");
+
+    function updateScore() {
+      score++;
+      scoreDisplay.innerText = `スコア: ${score}`;
+    }
+
     // ジャンプ処理
     character.addEventListener("click", () => {
       if (!character.classList.contains("jump")) {
@@ -98,14 +108,37 @@
       }
     });
 
-    // 花びらを作る
+    // 花びらを作る＋判定
     function createPetal() {
       const petal = document.createElement("div");
       petal.className = "petal";
       petal.style.left = Math.random() * window.innerWidth + "px";
       petal.style.animationDuration = (3 + Math.random() * 2) + "s";
       document.body.appendChild(petal);
-      setTimeout(() => petal.remove(), 6000);
+
+      // 花びらとキャラの当たり判定
+      const checkInterval = setInterval(() => {
+        const petalRect = petal.getBoundingClientRect();
+        const charRect = character.getBoundingClientRect();
+
+        const isHit =
+          petalRect.bottom > charRect.top &&
+          petalRect.top < charRect.bottom &&
+          petalRect.left < charRect.right &&
+          petalRect.right > charRect.left;
+
+        if (isHit) {
+          updateScore();        // スコア加算
+          petal.remove();       // 花びら削除
+          clearInterval(checkInterval);
+        }
+      }, 100); // 0.1秒ごとに判定
+
+      // 一定時間で花びら削除
+      setTimeout(() => {
+        petal.remove();
+        clearInterval(checkInterval);
+      }, 6000);
     }
 
     // 花びらを定期的に落とす
