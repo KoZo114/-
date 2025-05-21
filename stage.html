@@ -93,6 +93,7 @@
   <div id="gameOver">ゲーム終了！<br>スコア: <span id="finalScore"></span></div>
 
   <script>
+    const se = new Audio("kirarin.mp3");
     const image = localStorage.getItem("selectedImage");
     const character = document.getElementById("character");
     if (image) {
@@ -128,9 +129,12 @@
     let score = 0;
     const scoreDisplay = document.getElementById("score");
     function updateScore() {
-      score++;
-      scoreDisplay.innerText = `スコア: ${score}`;
-    }
+  　　　　　　score++;
+  　　　　　　scoreDisplay.innerText = `スコア: ${score}`;
+  　　　　　　se.currentTime = 0;
+  　　　　　　se.play();
+　　　　　　　　　　}
+
 
     function createPetal() {
       if (isGameOver) return;
