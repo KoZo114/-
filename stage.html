@@ -115,6 +115,23 @@
       window.location.href = "index.html";
     }
 
+    let characterX = window.innerWidth / 2;
+function updateCharacterPosition() {
+  character.style.left = `${characterX}px`;
+}
+updateCharacterPosition();
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") {
+    characterX -= 20;
+  } else if (e.key === "ArrowRight") {
+    characterX += 20;
+  }
+  // 画面外に出ないよう制限
+  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+  updateCharacterPosition();
+});
+
     character.addEventListener("click", () => {
       if (!character.classList.contains("jump")) {
         character.classList.add("jump");
