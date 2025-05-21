@@ -199,6 +199,60 @@ document.addEventListener("keydown", (e) => {
     }
 
     startGame();
+    // 🟦 1. タッチボタンを追加
+const leftBtn = document.createElement("button");
+leftBtn.innerText = "◀";
+leftBtn.style.cssText = `
+  position: fixed; bottom: 20px; left: 20px;
+  width: 60px; height: 60px; font-size: 24px;
+  border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.5); color: white; z-index: 20;
+`;
+
+const rightBtn = document.createElement("button");
+rightBtn.innerText = "▶";
+rightBtn.style.cssText = `
+  position: fixed; bottom: 20px; right: 20px;
+  width: 60px; height: 60px; font-size: 24px;
+  border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.5); color: white; z-index: 20;
+`;
+
+document.body.appendChild(leftBtn);
+document.body.appendChild(rightBtn);
+
+leftBtn.addEventListener("touchstart", () => {
+  characterX -= 20;
+  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+  updateCharacterPosition();
+});
+
+rightBtn.addEventListener("touchstart", () => {
+  characterX += 20;
+  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+  updateCharacterPosition();
+});
+
+// 🟦 2. スワイプ対応
+let touchStartX = null;
+document.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].clientX;
+});
+document.addEventListener("touchend", (e) => {
+  if (touchStartX === null) return;
+  const deltaX = e.changedTouches[0].clientX - touchStartX;
+  if (deltaX > 50) {
+    // 右スワイプ
+    characterX += 20;
+  } else if (deltaX < -50) {
+    // 左スワイプ
+    characterX -= 20;
+  }
+  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+  updateCharacterPosition();
+  touchStartX = null;
+});
+
   </script>
 </body>
 </html>
