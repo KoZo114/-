@@ -16,7 +16,6 @@
       background-position: center;
       font-family: sans-serif;
     }
-
     #character {
       position: absolute;
       bottom: 20px;
@@ -25,18 +24,15 @@
       z-index: 5;
       transition: bottom 0.3s ease;
     }
-
     #character.jump {
       animation: jump 0.6s ease;
     }
-
     @keyframes jump {
       0%   { transform: translateX(-50%) translateY(0); }
       30%  { transform: translateX(-50%) translateY(-60px); }
       60%  { transform: translateX(-50%) translateY(-60px); }
       100% { transform: translateX(-50%) translateY(0); }
     }
-
     .petal {
       position: absolute;
       width: 30px;
@@ -48,7 +44,6 @@
       animation: fall linear;
       z-index: 1;
     }
-
     @keyframes fall {
       0% {
         transform: translateY(-50px) rotate(0deg);
@@ -59,11 +54,9 @@
         opacity: 1;
       }
     }
-
-    #score {
+    #score, #timer {
       position: fixed;
       top: 10px;
-      right: 20px;
       font-size: 20px;
       font-weight: bold;
       color: #fff;
@@ -72,17 +65,36 @@
       border-radius: 8px;
       z-index: 10;
     }
+    #score {
+      right: 20px;
+    }
+    #timer {
+      left: 20px;
+    }
+    #gameOver {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      font-size: 24px;
+      display: none;
+      z-index: 20;
+    }
   </style>
 </head>
 <body>
   <img id="character" src="" alt="キャラ画像">
   <div id="score">スコア: 0</div>
+  <div id="timer">残り: 30秒</div>
+  <div id="gameOver">ゲーム終了！<br>スコア: <span id="finalScore"></span></div>
 
   <script>
     const image = localStorage.getItem("selectedImage");
     const character = document.getElementById("character");
-
-    // キャラ画像設定
     if (image) {
       character.src = image;
     } else {
@@ -90,16 +102,12 @@
       window.location.href = "index.html";
     }
 
-    // 初期X位置（中央）
     let characterX = window.innerWidth / 2;
     function updateCharacterPosition() {
       character.style.left = `${characterX}px`;
     }
-
-    // 初期位置設定
     updateCharacterPosition();
 
-    // ジャンプ処理
     character.addEventListener("click", () => {
       if (!character.classList.contains("jump")) {
         character.classList.add("jump");
@@ -107,30 +115,25 @@
       }
     });
 
-    // キー操作で左右移動（←→）
     document.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft") {
         characterX -= 20;
       } else if (e.key === "ArrowRight") {
         characterX += 20;
       }
-
-      // 範囲制限
       characterX = Math.max(0, Math.min(window.innerWidth, characterX));
       updateCharacterPosition();
     });
 
-    // スコア管理
     let score = 0;
     const scoreDisplay = document.getElementById("score");
-
     function updateScore() {
       score++;
       scoreDisplay.innerText = `スコア: ${score}`;
     }
 
-    // 花びら生成＋当たり判定
     function createPetal() {
+      if (isGameOver) return;
       const petal = document.createElement("div");
       petal.className = "petal";
       petal.style.left = Math.random() * window.innerWidth + "px";
@@ -140,7 +143,6 @@
       const interval = setInterval(() => {
         const petalRect = petal.getBoundingClientRect();
         const charRect = character.getBoundingClientRect();
-
         const isHit =
           petalRect.bottom > charRect.top &&
           petalRect.top < charRect.bottom &&
@@ -160,7 +162,21 @@
       }, 6000);
     }
 
-    // 花びらを定期的に出す
+    let isGameOver = false;
+    const timerDisplay = document.getElementById("timer");
+    let timeLeft = 30;
+    const timer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.innerText = `残り: ${timeLeft}秒`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        isGameOver = true;
+        document.getElementById("gameOver").style.display = "block";
+        document.getElementById("finalScore").innerText = score;
+      }
+    }, 1000);
+
     setInterval(createPetal, 400);
   </script>
 </body>
