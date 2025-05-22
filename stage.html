@@ -116,21 +116,20 @@
     }
 
     let characterX = window.innerWidth / 2;
-function updateCharacterPosition() {
-  character.style.left = `${characterX}px`;
-}
-updateCharacterPosition();
+    function updateCharacterPosition() {
+      character.style.left = `${characterX}px`;
+    }
+    updateCharacterPosition();
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowLeft") {
-    characterX -= 20;
-  } else if (e.key === "ArrowRight") {
-    characterX += 20;
-  }
-  // 画面外に出ないよう制限
-  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
-  updateCharacterPosition();
-});
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        characterX -= 20;
+      } else if (e.key === "ArrowRight") {
+        characterX += 20;
+      }
+      characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+      updateCharacterPosition();
+    });
 
     character.addEventListener("click", () => {
       if (!character.classList.contains("jump")) {
@@ -199,60 +198,72 @@ document.addEventListener("keydown", (e) => {
     }
 
     startGame();
-    // 🟦 1. タッチボタンを追加
-const leftBtn = document.createElement("button");
-leftBtn.innerText = "◀";
-leftBtn.style.cssText = `
-  position: fixed; bottom: 20px; left: 20px;
-  width: 60px; height: 60px; font-size: 24px;
-  border-radius: 50%; border: none;
-  background: rgba(0,0,0,0.5); color: white; z-index: 20;
-`;
 
-const rightBtn = document.createElement("button");
-rightBtn.innerText = "▶";
-rightBtn.style.cssText = `
-  position: fixed; bottom: 20px; right: 20px;
-  width: 60px; height: 60px; font-size: 24px;
-  border-radius: 50%; border: none;
-  background: rgba(0,0,0,0.5); color: white; z-index: 20;
-`;
+    // タッチボタン表示
+    const leftBtn = document.createElement("button");
+    leftBtn.innerText = "◀";
+    leftBtn.style.cssText = `
+      position: fixed; bottom: 20px; left: 20px;
+      width: 60px; height: 60px; font-size: 24px;
+      border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.5); color: white; z-index: 20;
+    `;
 
-document.body.appendChild(leftBtn);
-document.body.appendChild(rightBtn);
+    const rightBtn = document.createElement("button");
+    rightBtn.innerText = "▶";
+    rightBtn.style.cssText = `
+      position: fixed; bottom: 20px; right: 20px;
+      width: 60px; height: 60px; font-size: 24px;
+      border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.5); color: white; z-index: 20;
+    `;
 
-leftBtn.addEventListener("touchstart", () => {
-  characterX -= 20;
-  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
-  updateCharacterPosition();
-});
+    document.body.appendChild(leftBtn);
+    document.body.appendChild(rightBtn);
 
-rightBtn.addEventListener("touchstart", () => {
-  characterX += 20;
-  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
-  updateCharacterPosition();
-});
+    // 押しっぱなし対応
+    let moveInterval = null;
 
-// 🟦 2. スワイプ対応
-let touchStartX = null;
-document.addEventListener("touchstart", (e) => {
-  touchStartX = e.changedTouches[0].clientX;
-});
-document.addEventListener("touchend", (e) => {
-  if (touchStartX === null) return;
-  const deltaX = e.changedTouches[0].clientX - touchStartX;
-  if (deltaX > 50) {
-    // 右スワイプ
-    characterX += 20;
-  } else if (deltaX < -50) {
-    // 左スワイプ
-    characterX -= 20;
-  }
-  characterX = Math.max(0, Math.min(window.innerWidth, characterX));
-  updateCharacterPosition();
-  touchStartX = null;
-});
+    function startMove(direction) {
+      if (moveInterval) return;
+      moveInterval = setInterval(() => {
+        if (direction === "left") {
+          characterX -= 10;
+        } else if (direction === "right") {
+          characterX += 10;
+        }
+        characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+        updateCharacterPosition();
+      }, 50);
+    }
 
+    function stopMove() {
+      clearInterval(moveInterval);
+      moveInterval = null;
+    }
+
+    leftBtn.addEventListener("touchstart", () => startMove("left"));
+    rightBtn.addEventListener("touchstart", () => startMove("right"));
+    leftBtn.addEventListener("touchend", stopMove);
+    rightBtn.addEventListener("touchend", stopMove);
+
+    // スワイプ対応
+    let touchStartX = null;
+    document.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener("touchend", (e) => {
+      if (touchStartX === null) return;
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      if (deltaX > 50) {
+        characterX += 20;
+      } else if (deltaX < -50) {
+        characterX -= 20;
+      }
+      characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+      updateCharacterPosition();
+      touchStartX = null;
+    });
   </script>
 </body>
 </html>
