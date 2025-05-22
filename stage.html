@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+# 再度HTMLファイルを作成（実行環境リセット後）
+html_code = """<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
@@ -100,6 +101,14 @@
     const gameover = document.getElementById("gameover");
     const se = new Audio("kirarin.mp3");
 
+    const bgm = new Audio("bgm.mp3");
+    bgm.loop = true;
+    bgm.volume = 0.5;
+
+    document.body.addEventListener("click", () => {
+      bgm.play().catch(() => {});
+    }, { once: true });
+
     let score = 0;
     let highscore = localStorage.getItem("highscore") || 0;
     let timeLeft = 30;
@@ -174,6 +183,7 @@
     }
 
     function startGame() {
+      bgm.play().catch(() => {});
       gameInterval = setInterval(() => {
         createPetal();
       }, 400);
@@ -199,7 +209,6 @@
 
     startGame();
 
-    // タッチボタン表示
     const leftBtn = document.createElement("button");
     leftBtn.innerText = "◀";
     leftBtn.style.cssText = `
@@ -221,7 +230,6 @@
     document.body.appendChild(leftBtn);
     document.body.appendChild(rightBtn);
 
-    // 押しっぱなし対応
     let moveInterval = null;
 
     function startMove(direction) {
@@ -247,7 +255,6 @@
     leftBtn.addEventListener("touchend", stopMove);
     rightBtn.addEventListener("touchend", stopMove);
 
-    // スワイプ対応
     let touchStartX = null;
     document.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].clientX;
@@ -267,3 +274,11 @@
   </script>
 </body>
 </html>
+"""
+
+# 保存
+file_path = "/mnt/data/game_with_bgm.html"
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+file_path
