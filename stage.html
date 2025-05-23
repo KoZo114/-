@@ -22,9 +22,14 @@
       height: 100vh;
       overflow: hidden;
       position: relative;
-      background-image: url('https://cdn.pixabay.com/photo/2020/04/16/10/56/sakura-5050974_1280.jpg');
-      background-size: cover;
-      background-position: center;
+      /* 桜が美しく映える優美なグラデーション背景 */
+      background: linear-gradient(135deg, 
+        #ffeef5 0%,     /* 桜色の薄いピンク */
+        #ffe8f0 25%,    /* 柔らかなピンク */
+        #f8e8ff 50%,    /* 薄紫 */
+        #e8f0ff 75%,    /* 空色 */
+        #f0f8ff 100%    /* 雲白 */
+      );
       font-family: sans-serif;
       /* タッチ操作の最適化 */
       touch-action: manipulation;
@@ -35,7 +40,8 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      max-height: 40vh;
+      max-height: 25vh; /* サイズを40vh→25vhに縮小 */
+      max-width: 120px; /* 幅も制限してバランス調整 */
       z-index: 5;
       /* 画像の長押しメニューを完全に防ぐ */
       -webkit-user-drag: none;
@@ -44,6 +50,8 @@
       -o-user-drag: none;
       user-drag: none;
       pointer-events: auto;
+      /* キャラクターに少し影を追加して立体感を演出 */
+      filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
     }
     #character.jump {
       animation: jump 0.6s ease;
@@ -56,38 +64,66 @@
     }
     .petal {
       position: absolute;
-      width: 30px;
-      height: 30px;
-      background-image: url('petal.png');
-      background-size: contain;
-      background-repeat: no-repeat;
+      width: 35px;  /* 花びらを少し大きく */
+      height: 35px;
+      /* 美しい桜の花びらを CSS で作成 */
+      background: radial-gradient(ellipse at center, 
+        #ffb3d9 0%,     /* 中心は濃いピンク */
+        #ffc9e0 40%,    /* 中間色 */
+        #ffe0f0 80%,    /* 外側は薄いピンク */
+        rgba(255, 192, 224, 0.8) 100%
+      );
+      border-radius: 50% 10% 50% 10%; /* 花びらの形 */
+      box-shadow: 
+        0 2px 4px rgba(255, 105, 180, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
       pointer-events: none;
       animation: fall linear;
       z-index: 1;
+      /* 花びらの輝きを追加 */
+      filter: drop-shadow(0 0 3px rgba(255, 182, 193, 0.6));
     }
     @keyframes fall {
       0% {
-        transform: translateY(-50px) rotate(0deg);
-        opacity: 0.4;
+        transform: translateY(-50px) rotate(0deg) scale(0.8);
+        opacity: 0.6;
+      }
+      25% {
+        opacity: 1;
+        transform: translateY(25vh) rotate(90deg) scale(1);
+      }
+      50% {
+        transform: translateY(50vh) rotate(180deg) scale(1.1);
+      }
+      75% {
+        transform: translateY(75vh) rotate(270deg) scale(1);
       }
       100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 1;
+        transform: translateY(100vh) rotate(360deg) scale(0.9);
+        opacity: 0.8;
       }
     }
     #scoreboard {
       position: fixed;
-      top: 10px;
+      top: 15px;
       right: 20px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
-      color: #fff;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 8px 16px;
-      border-radius: 8px;
+      color: #5a3d5c; /* 深い紫色で上品に */
+      background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 240, 250, 0.8) 100%
+      );
+      padding: 12px 18px;
+      border-radius: 15px;
       z-index: 10;
-      line-height: 1.4;
-      pointer-events: none;
+      line-height: 1.5;
+      /* 美しい影とボーダー */
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(255, 105, 180, 0.2);
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      backdrop-filter: blur(5px);
     }
     #gameover {
       position: absolute;
