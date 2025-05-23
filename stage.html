@@ -160,15 +160,14 @@
       animation: star-spin 2s linear infinite;
     }
 
-    /* ★★★ 追加: 時間増加アイテムのスタイル ★★★ */
     .time-plus {
       position: absolute;
       width: 40px;
       height: 40px;
-      background: radial-gradient(circle, #fafad2 0%, #eee8aa 50%, #daa520 100%); /* ゴールドっぽい砂時計色 */
+      background: radial-gradient(circle, #fafad2 0%, #eee8aa 50%, #daa520 100%);
       border-radius: 50%;
-      filter: drop-shadow(0 0 8px rgba(218, 165, 32, 0.7)); /* ゴールドの影 */
-      animation: fall-time-plus linear; /* アニメーション名を変更 */
+      filter: drop-shadow(0 0 8px rgba(218, 165, 32, 0.7));
+      animation: fall-time-plus linear;
     }
 
     .time-plus::before {
@@ -178,15 +177,13 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 25px;
-      animation: time-pulse 1.5s ease-in-out infinite alternate; /* 独自のパルスアニメーション */
+      animation: time-pulse 1.5s ease-in-out infinite alternate;
     }
     @keyframes time-pulse {
         0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.7; }
         50% { transform: translate(-50%, -50%) scale(1.1) rotate(10deg); opacity: 1; }
         100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.7; }
     }
-    /* ★★★ ここまで時間増加アイテムスタイル ★★★ */
-
 
     @keyframes star-spin {
       0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
@@ -223,7 +220,7 @@
       100% { transform: translateY(100vh) rotate(480deg) scale(1); opacity: 1; }
     }
 
-    @keyframes fall-bomb { /* 爆弾は少し速く、不規則に落ちるイメージ */
+    @keyframes fall-bomb {
       0% { transform: translateY(-50px) rotate(0deg) scale(1); opacity: 1; }
       30% { transform: translateY(30vh) rotate(-20deg) scale(1.05); }
       60% { transform: translateY(60vh) rotate(15deg) scale(1.1); }
@@ -237,8 +234,7 @@
       75% { transform: translateY(75vh) scale(1.1); }
       100% { transform: translateY(100vh) scale(1); opacity: 1; }
     }
-    /* ★★★ 追加: 時間増加アイテムの落下アニメーション ★★★ */
-    @keyframes fall-time-plus { /* パワーアップと似たようなゆっくりとした揺れ */
+    @keyframes fall-time-plus {
       0% { transform: translateY(-50px) translateX(0px) rotate(0deg) scale(0.9); opacity: 0.7;}
       25% { opacity: 1; transform: translateY(25vh) translateX(10px) rotate(5deg) scale(1);}
       50% { transform: translateY(50vh) translateX(-10px) rotate(-5deg) scale(1.1);}
@@ -253,17 +249,12 @@
       font-size: 14px;
       font-weight: bold;
       color: #5a3d5c;
-      background: linear-gradient(145deg,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(255, 240, 250, 0.9) 100%
-      );
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 240, 250, 0.9) 100%);
       padding: 15px 20px;
       border-radius: 20px;
       z-index: 10;
       line-height: 1.6;
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.15),
-        0 4px 8px rgba(255, 105, 180, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(255, 105, 180, 0.2);
       border: 2px solid rgba(255, 182, 193, 0.4);
       backdrop-filter: blur(10px);
       min-width: 180px;
@@ -276,16 +267,11 @@
       font-size: 16px;
       font-weight: bold;
       color: #5a3d5c;
-      background: linear-gradient(145deg,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(240, 248, 255, 0.9) 100%
-      );
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.9) 100%);
       padding: 12px 18px;
       border-radius: 15px;
       z-index: 10;
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(65, 105, 225, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(65, 105, 225, 0.2);
       border: 2px solid rgba(100, 149, 237, 0.3);
       backdrop-filter: blur(5px);
     }
@@ -331,117 +317,50 @@
       border: 2px solid rgba(255, 255, 255, 0.2);
     }
     #return-to-select-btn {
-        background-color: #f08080;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin-top: 25px;
-        cursor: pointer;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
+        background-color: #f08080; color: white; border: none; padding: 12px 25px;
+        text-align: center; text-decoration: none; display: inline-block; font-size: 16px;
+        margin-top: 25px; cursor: pointer; border-radius: 8px; transition: background-color 0.3s ease;
     }
-    #return-to-select-btn:hover {
-        background-color: #cd5c5c;
-    }
-
+    #return-to-select-btn:hover { background-color: #cd5c5c; }
 
     .control-btn {
-      position: fixed;
-      bottom: 15px;
-      width: 55px;
-      height: 55px;
-      font-size: 22px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(145deg,
-        rgba(255, 182, 193, 0.9) 0%,
-        rgba(255, 105, 180, 0.8) 100%
-      );
-      color: white;
-      z-index: 20;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      cursor: pointer;
-      box-shadow:
-        0 6px 18px rgba(255, 105, 180, 0.4),
-        0 3px 6px rgba(0, 0, 0, 0.2);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      transition: all 0.2s ease;
+      position: fixed; bottom: 15px; width: 55px; height: 55px; font-size: 22px;
+      border-radius: 50%; border: none;
+      background: linear-gradient(145deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 105, 180, 0.8) 100%);
+      color: white; z-index: 20; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      cursor: pointer; box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4), 0 3px 6px rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4); transition: all 0.2s ease;
     }
-
     .control-btn:active {
       transform: scale(0.95);
-      box-shadow:
-        0 3px 9px rgba(255, 105, 180, 0.4),
-        0 1px 3px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 3px 9px rgba(255, 105, 180, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .power-effect {
-      position: fixed;
-      bottom: 150px;
-      left: 20px;
-      background: linear-gradient(45deg, #9370DB, #4169E1);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      z-index: 15;
-      display: none;
-      animation: power-glow 0.5s ease-in-out infinite alternate;
+      position: fixed; bottom: 150px; left: 20px; background: linear-gradient(45deg, #9370DB, #4169E1);
+      color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold;
+      z-index: 15; display: none; animation: power-glow 0.5s ease-in-out infinite alternate;
     }
-
     @keyframes power-glow {
       0% { box-shadow: 0 0 10px rgba(147, 112, 219, 0.8); }
       100% { box-shadow: 0 0 20px rgba(147, 112, 219, 1); }
     }
 
     @media (max-height: 600px) {
-      #character {
-        bottom: 90px;
-        max-height: 20vh;
-      }
-      .control-btn {
-        bottom: 10px;
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-      }
-      #scoreboard {
-        font-size: 12px;
-        padding: 10px 15px;
-      }
+      #character { bottom: 90px; max-height: 20vh; }
+      .control-btn { bottom: 10px; width: 50px; height: 50px; font-size: 20px; }
+      #scoreboard { font-size: 12px; padding: 10px 15px; }
     }
-
-    @media (max-height: 500px) {
-      #character {
-        bottom: 100px;
-        max-height: 18vh;
-      }
-    }
+    @media (max-height: 500px) { #character { bottom: 100px; max-height: 18vh; } }
 
     .level-up-effect {
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 32px;
-      font-weight: bold;
-      color: #FFD700;
+      position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 32px;
+      font-weight: bold; color: #FFD700;
       background: linear-gradient(45deg, rgba(255, 215, 0, 0.9), rgba(255, 140, 0, 0.8));
-      padding: 20px 40px;
-      border-radius: 20px;
-      z-index: 25;
-      display: none;
-      animation: level-up-animation 2s ease-out;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 20px 40px; border-radius: 20px; z-index: 25; display: none;
+      animation: level-up-animation 2s ease-out; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       border: 3px solid rgba(255, 255, 255, 0.8);
     }
-
     @keyframes level-up-animation {
       0% { transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); opacity: 0; }
       30% { transform: translate(-50%, -50%) scale(1.2) rotate(5deg); opacity: 1; }
@@ -510,16 +429,16 @@
 
     let score = 0;
     let highscore = 0;
-    let timeLeft = 60; // 初期時間60秒
-    const MAX_TIME_LEFT = 90; // 時間増加アイテムによる最大時間
-    const MAX_LEVEL = 5;    // ★★★ 最大レベル設定 ★★★
+    let timeLeft = 60;
+    const MAX_TIME_LEFT = 90;
+    const MAX_LEVEL = 5;
     let level = 1;
-    // ★★★ 追加: レベルアップに必要なスコアの閾値 ★★★
-    // levelThresholds[i] は、レベル (i+1) になるために必要な最低スコア
-    const levelThresholds = [0, 30, 80, 150, 250]; // Lv1, Lv2, Lv3, Lv4, Lv5 の閾値
+    // ★★★ ここが前回変更を提案した箇所です ★★★
+    const levelThresholds = [0, 30, 80, 150, 250]; // Lv1(0), Lv2(30), Lv3(80), Lv4(150), Lv5(250)
+
     let combo = 0;
     let maxCombo = 0;
-    let gameInterval; // createItemのインターバルID (startGame内で代入)
+    let itemSpawnerId; // gameInterval から itemSpawnerId に名前を戻しました（一貫性のため）
     let bgParticleInterval;
     let isPowerUpActive = false;
     let powerUpEndTime = 0;
@@ -538,7 +457,7 @@
     }
 
     try {
-      highscore = parseInt(localStorage.getItem("sakuraGameHighscoreV2")) || 0; // キー名を少し変更
+      highscore = parseInt(localStorage.getItem("sakuraGameHighscoreV2")) || 0;
     } catch (error) {
       console.log("ローカルストレージのハイスコアにアクセスできません");
     }
@@ -558,19 +477,21 @@
       character.style.left = `${characterX}px`;
     }
 
-    // ★★★ 最大レベルと新しい閾値を考慮したレベル計算 ★★★
+    // ★★★ ここが前回変更を提案した箇所です ★★★
     function calculateLevel() {
       let newCalculatedLevel = 1;
-      // 現在のスコアがどのレベルの閾値を超えているかを確認
       for (let i = 0; i < levelThresholds.length; i++) {
         if (score >= levelThresholds[i]) {
-          newCalculatedLevel = i + 1; // 配列のインデックス+1がレベルになる
+          newCalculatedLevel = i + 1;
         } else {
-          // スコアが次の閾値に達していなければループを抜ける
           break;
         }
       }
-      return Math.min(newCalculatedLevel, MAX_LEVEL); // 念のためMAX_LEVELで制限
+      return Math.min(newCalculatedLevel, MAX_LEVEL);
+    }
+
+    function getSpawnRate() {
+      return Math.max(150, 700 - (level * 40));
     }
 
     function updateScore(points = 1) {
@@ -581,19 +502,16 @@
       scoreDisplay.innerText = score;
       comboDisplay.innerText = combo;
 
-      level = calculateLevel(); // 新しいレベル計算関数を呼び出す
+      level = calculateLevel(); // ★★★ ここが前回変更を提案した箇所です ★★★
       levelDisplay.innerText = level;
 
-      if (level > previousLevel) { // レベルアップした場合のみ表示
+      if (level > previousLevel) {
         if (level === MAX_LEVEL && previousLevel < MAX_LEVEL) {
           showLevelUp(`MAX LEVEL ${MAX_LEVEL} 到達!`);
-        } else if (level < MAX_LEVEL) {
+        } else if (level < MAX_LEVEL) { // MAX_LEVELより下の場合のみ通常のレベルアップ表示
           showLevelUp(`LEVEL ${level}!`);
         }
-        // MAX_LEVELに到達したら、それ以降のレベルアップメッセージは表示しない
-        // (または、レベルは内部的に上がり続けるが、表示はMAX_LEVELのままという方法もある)
       }
-
 
       if (combo > 1) showComboPopup();
       if (combo > maxCombo) maxCombo = combo;
@@ -603,252 +521,156 @@
       }
       if (points >= 5) showSpecialEffect();
     }
-    function resetCombo() {
-      combo = 0;
-      comboDisplay.innerText = combo;
-    }
 
+    function resetCombo() { combo = 0; comboDisplay.innerText = combo; }
     function showComboPopup() {
       comboPopup.textContent = `${combo} COMBO!`;
       comboPopup.style.display = 'block';
       setTimeout(() => { comboPopup.style.display = 'none'; }, 1000);
     }
-
-    // ★★★ レベルアップ表示関数を少し変更 (メッセージを受け取れるように) ★★★
     function showLevelUp(message = `LEVEL ${level}!`) {
       levelUpEffect.textContent = message;
       levelUpEffect.style.display = 'block';
       setTimeout(() => { levelUpEffect.style.display = 'none'; }, 2000);
     }
-
-
     function showSpecialEffect() {
-      scoreDisplay.style.transform = 'scale(1.3)';
-      scoreDisplay.style.color = '#FFD700';
-      setTimeout(() => {
-        scoreDisplay.style.transform = 'scale(1)';
-        scoreDisplay.style.color = '#5a3d5c';
-      }, 500);
+      scoreDisplay.style.transform = 'scale(1.3)'; scoreDisplay.style.color = '#FFD700';
+      setTimeout(() => { scoreDisplay.style.transform = 'scale(1)'; scoreDisplay.style.color = '#5a3d5c'; }, 500);
     }
 
     let powerUpTimerId = null;
     function activatePowerUp() {
       if (isPowerUpActive) {
-        powerUpEndTime += 10000;
-        if (powerUpTimerId) clearInterval(powerUpTimerId);
+        powerUpEndTime += 10000; if (powerUpTimerId) clearInterval(powerUpTimerId);
       } else {
-        isPowerUpActive = true;
-        powerUpEndTime = Date.now() + 10000;
-        character.classList.add('powerup');
-        powerEffect.textContent = '✨ダブルスコア中！';
-        powerEffect.style.display = 'block';
+        isPowerUpActive = true; powerUpEndTime = Date.now() + 10000;
+        character.classList.add('powerup'); powerEffect.textContent = '✨ダブルスコア中！'; powerEffect.style.display = 'block';
       }
       powerUpTimerId = setInterval(() => {
         const remaining = Math.ceil((powerUpEndTime - Date.now()) / 1000);
-        if (remaining <= 0) {
-          clearInterval(powerUpTimerId);
-          powerUpTimerId = null;
-          deactivatePowerUp();
-        } else {
-          powerEffect.textContent = `✨ダブルスコア中！(${remaining}s)`;
-        }
+        if (remaining <= 0) { clearInterval(powerUpTimerId); powerUpTimerId = null; deactivatePowerUp(); }
+        else { powerEffect.textContent = `✨ダブルスコア中！(${remaining}s)`; }
       }, 100);
     }
-
     function deactivatePowerUp() {
-      isPowerUpActive = false;
-      character.classList.remove('powerup');
-      powerEffect.style.display = 'none';
-      if (powerUpTimerId) {
-          clearInterval(powerUpTimerId);
-          powerUpTimerId = null;
-      }
+      isPowerUpActive = false; character.classList.remove('powerup'); powerEffect.style.display = 'none';
+      if (powerUpTimerId) { clearInterval(powerUpTimerId); powerUpTimerId = null; }
     }
 
-    // ★★★ アイテム生成ロジック変更 ★★★
     function createItem() {
       if (timeLeft <= 0) return;
+      console.log(`createItem called. Level: ${level}, TimeLeft: ${timeLeft}`); // ★★★ デバッグ用ログ追加 ★★★
 
       const item = document.createElement("div");
       const rand = Math.random();
-      let itemType = "normal"; // デフォルト
+      let itemType = "normal";
 
-      // --- 確率設定 ---
       let probBomb = 0;
-      if (level >= 2) { // 爆弾はレベル2から
-        probBomb = Math.min(0.05 + (level - 2) * 0.03, 0.14); // L2:5%, L3:8%, L4:11%, L5:14%
-      }
-      const probTimePlus = 0.08; // 時間増加アイテム: 8% (レベル1から)
+      if (level >= 2) { probBomb = Math.min(0.05 + (level - 2) * 0.03, 0.14); }
+      const probTimePlus = 0.08;
       let probPowerUp = 0;
-      if (level >= 2) { // パワーアップはレベル2から
-          probPowerUp = 0.07; // 7%
-      }
-      const probGolden = 0.15; // 金: 15%
-      const probSpecial = 0.20; // 特: 20%
-      // 残りが通常
+      if (level >= 2) { probPowerUp = 0.07; }
+      const probGolden = 0.15;
+      const probSpecial = 0.20;
 
-      // --- アイテムタイプ決定 ---
       let cumulativeProb = 0;
-
       cumulativeProb += probBomb;
-      if (rand < cumulativeProb && level >= 2) { // level >=2 条件をここでも確認
-        itemType = "bomb";
-      } else {
+      if (rand < cumulativeProb && level >= 2) { itemType = "bomb"; }
+      else {
         cumulativeProb += probTimePlus;
-        if (rand < cumulativeProb) {
-          itemType = "timePlus";
-        } else {
+        if (rand < cumulativeProb) { itemType = "timePlus"; }
+        else {
           cumulativeProb += probPowerUp;
-          if (rand < cumulativeProb && level >= 2) { // level >=2 条件をここでも確認
-             itemType = "powerup";
-          } else {
+          if (rand < cumulativeProb && level >= 2) { itemType = "powerup"; }
+          else {
             cumulativeProb += probGolden;
-            if (rand < cumulativeProb) {
-              itemType = "golden";
-            } else {
+            if (rand < cumulativeProb) { itemType = "golden"; }
+            else {
               cumulativeProb += probSpecial;
-              if (rand < cumulativeProb) {
-                itemType = "special";
-              } else {
-                itemType = "normal";
-              }
+              if (rand < cumulativeProb) { itemType = "special"; }
+              else { itemType = "normal"; }
             }
           }
         }
       }
+      console.log(`Rand: ${rand.toFixed(3)}, ItemType: ${itemType}, cProb: ${cumulativeProb.toFixed(3)} (Bomb: ${probBomb.toFixed(3)}, Time: ${probTimePlus.toFixed(3)}, PowerUp: ${probPowerUp.toFixed(3)})`); // ★★★ デバッグ用ログ追加 ★★★
 
 
-      // --- DOM生成と設定 ---
       switch(itemType) {
-        case "bomb":
-          item.className = "bomb";
-          item.dataset.type = "bomb";
-          item.dataset.points = "-10";
-          break;
-        case "timePlus": // ★★★ 時間増加アイテム ★★★
-          item.className = "time-plus";
-          item.dataset.type = "timePlus";
-          // item.dataset.timeValue = "5"; // 時間増加量 (今回は直接処理)
-          break;
-        case "powerup":
-          item.className = "power-up";
-          item.dataset.type = "powerup";
-          item.dataset.points = "0";
-          break;
-        case "golden":
-          item.className = "petal golden";
-          item.dataset.type = "golden";
-          item.dataset.points = "5";
-          break;
-        case "special":
-          item.className = "petal special";
-          item.dataset.type = "special";
-          item.dataset.points = "2";
-          break;
-        default: // normal
-          item.className = "petal";
-          item.dataset.type = "normal";
-          item.dataset.points = "1";
+        case "bomb": item.className = "bomb"; item.dataset.type = "bomb"; item.dataset.points = "-10"; break;
+        case "timePlus": item.className = "time-plus"; item.dataset.type = "timePlus"; break;
+        case "powerup": item.className = "power-up"; item.dataset.type = "powerup"; item.dataset.points = "0"; break;
+        case "golden": item.className = "petal golden"; item.dataset.type = "golden"; item.dataset.points = "5"; break;
+        case "special": item.className = "petal special"; item.dataset.type = "special"; item.dataset.points = "2"; break;
+        default: item.className = "petal"; item.dataset.type = "normal"; item.dataset.points = "1";
       }
 
       item.style.left = Math.random() * (window.innerWidth - (parseInt(item.style.width) || 40)) + "px";
       let animationDuration = Math.max(1.5, (2 + Math.random() * 2) - (level * 0.1));
       item.style.animationDuration = animationDuration + "s";
       document.body.appendChild(item);
+      console.log(`Appended item: ${itemType}`); // ★★★ デバッグ用ログ追加 ★★★
+
 
       const checkCollision = setInterval(() => {
         if (!item.parentNode || timeLeft <= 0) {
-            clearInterval(checkCollision);
-            if(item.parentNode) item.remove();
-            return;
+            clearInterval(checkCollision); if(item.parentNode) item.remove(); return;
         }
-        const rect1 = item.getBoundingClientRect();
-        const rect2 = character.getBoundingClientRect();
-
+        const rect1 = item.getBoundingClientRect(); const rect2 = character.getBoundingClientRect();
         if ( rect1.top < rect2.bottom && rect1.bottom > rect2.top && rect1.left < rect2.right && rect1.right > rect2.left ) {
           const type = item.dataset.type;
-
           if (type === "bomb") {
-            score = Math.max(0, score + parseInt(item.dataset.points)); // dataset.points は "-10"
-            scoreDisplay.innerText = score;
-            resetCombo();
+            score = Math.max(0, score + parseInt(item.dataset.points)); scoreDisplay.innerText = score; resetCombo();
             document.body.style.background = '#ff6b6b';
-            setTimeout(() => {
-              document.body.style.background = 'linear-gradient(135deg, #ffeef5 0%, #ffe8f0 25%, #f8e8ff 50%, #e8f0ff 75%, #f0f8ff 100%)';
-            }, 150);
-          } else if (type === "timePlus") { // ★★★ 時間増加アイテムの処理 ★★★
-            timeLeft = Math.min(timeLeft + 5, MAX_TIME_LEFT); // 5秒プラス、上限MAX_TIME_LEFT秒
-            timerDisplay.innerText = timeLeft;
-            // 時間増加の特別な効果音やエフェクトをここに追加しても良い
+            setTimeout(() => { document.body.style.background = 'linear-gradient(135deg, #ffeef5 0%, #ffe8f0 25%, #f8e8ff 50%, #e8f0ff 75%, #f0f8ff 100%)'; }, 150);
+          } else if (type === "timePlus") {
+            timeLeft = Math.min(timeLeft + 5, MAX_TIME_LEFT); timerDisplay.innerText = timeLeft;
+            console.log("Time+ item collected!"); // ★★★ デバッグ用ログ追加 ★★★
           } else if (type === "powerup") {
             activatePowerUp();
-          } else { // 花びら系アイテム
-            updateScore(parseInt(item.dataset.points));
-          }
-          item.remove();
-          clearInterval(checkCollision);
+          } else { updateScore(parseInt(item.dataset.points)); }
+          item.remove(); clearInterval(checkCollision);
         }
       }, 30);
-
       setTimeout(() => {
-        if (item.parentNode) {
-          item.remove();
-          if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup" && item.dataset.type !== "timePlus") {
-            resetCombo();
-          }
+        if (item.parentNode) { item.remove();
+          if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup" && item.dataset.type !== "timePlus") { resetCombo(); }
         }
         clearInterval(checkCollision);
       }, animationDuration * 1000 + 200);
     }
 
     let gameTimerId = null;
-    let itemSpawnerId = null;
+    // let itemSpawnerId = null; // itemSpawnerIdはグローバルで宣言済み
 
     function startGame() {
-      if (bgm && typeof bgm.play === 'function' && bgm.paused) {
-        bgm.play().catch(err => console.warn("BGM再生に失敗:", err));
-      }
+      if (bgm && typeof bgm.play === 'function' && bgm.paused) { bgm.play().catch(err => console.warn("BGM再生に失敗:", err)); }
       itemSpawnerId = setInterval(createItem, getSpawnRate());
       bgParticleInterval = setInterval(createBackgroundParticle, 500);
       gameTimerId = setInterval(() => {
         if (timeLeft <= 0) {
-            clearInterval(gameTimerId);
-            clearInterval(itemSpawnerId);
-            clearInterval(bgParticleInterval);
-            if (powerUpTimerId) clearInterval(powerUpTimerId);
-            endGame();
-            return;
+            clearInterval(gameTimerId); clearInterval(itemSpawnerId); clearInterval(bgParticleInterval);
+            if (powerUpTimerId) clearInterval(powerUpTimerId); endGame(); return;
         }
-        timeLeft--;
-        timerDisplay.innerText = timeLeft;
-        clearInterval(itemSpawnerId); // 難易度変更のため一旦クリア
-        itemSpawnerId = setInterval(createItem, getSpawnRate());
+        timeLeft--; timerDisplay.innerText = timeLeft;
+        clearInterval(itemSpawnerId); itemSpawnerId = setInterval(createItem, getSpawnRate());
       }, 1000);
     }
 
     function endGame() {
       if (bgm && typeof bgm.pause === 'function') bgm.pause();
-      finalScore.innerText = score;
-      finalLevel.innerText = level;
-      gameover.style.display = "block";
+      finalScore.innerText = score; finalLevel.innerText = level; gameover.style.display = "block";
       if (score > highscore) {
         highscore = score;
-        try {
-          localStorage.setItem("sakuraGameHighscoreV2", highscore);
-          highscoreDisplay.innerText = highscore;
-        } catch (error) { console.log("ハイスコアの保存に失敗しました"); }
+        try { localStorage.setItem("sakuraGameHighscoreV2", highscore); highscoreDisplay.innerText = highscore; }
+        catch (error) { console.log("ハイスコアの保存に失敗しました"); }
       }
       document.querySelectorAll('.petal, .bomb, .power-up, .time-plus, .bg-particle').forEach(el => el.remove());
-      if (returnToSelectBtn) {
-        returnToSelectBtn.addEventListener("click", () => {
-          window.location.href = "index.html";
-        });
-      }
+      if (returnToSelectBtn) { returnToSelectBtn.addEventListener("click", () => { window.location.href = "index.html"; }); }
     }
 
     document.addEventListener("keydown", (e) => {
-      if (timeLeft <= 0) return;
-      let moved = false;
+      if (timeLeft <= 0) return; let moved = false;
       if (e.key === "ArrowLeft") { characterX -= 30; moved = true; }
       else if (e.key === "ArrowRight") { characterX += 30; moved = true; }
       else if (e.key === " " || e.key === "ArrowUp") { e.preventDefault(); jump(); }
@@ -858,31 +680,22 @@
         updateCharacterPosition();
       }
     });
-
     function jump() {
       if (!character.classList.contains("jump") && timeLeft > 0) {
-        character.classList.add("jump");
-        setTimeout(() => character.classList.remove("jump"), 600);
+        character.classList.add("jump"); setTimeout(() => character.classList.remove("jump"), 600);
       }
     }
+    character.addEventListener("click", (e) => { if (timeLeft <= 0) return; e.preventDefault(); jump(); }, { passive: false });
 
-    character.addEventListener("click", (e) => {
-      if (timeLeft <= 0) return;
-      e.preventDefault(); jump();
-    }, { passive: false });
-
-    const leftBtn = document.createElement("button");
-    leftBtn.innerText = "◀"; leftBtn.className = "control-btn"; leftBtn.style.left = "20px";
-    const rightBtn = document.createElement("button");
-    rightBtn.innerText = "▶"; rightBtn.className = "control-btn"; rightBtn.style.right = "20px";
+    const leftBtn = document.createElement("button"); leftBtn.innerText = "◀"; leftBtn.className = "control-btn"; leftBtn.style.left = "20px";
+    const rightBtn = document.createElement("button"); rightBtn.innerText = "▶"; rightBtn.className = "control-btn"; rightBtn.style.right = "20px";
     document.body.appendChild(leftBtn); document.body.appendChild(rightBtn);
 
     let moveInterval = null;
     function startMove(direction) {
       if (moveInterval || timeLeft <= 0) return;
       moveInterval = setInterval(() => {
-        if (direction === "left") characterX -= 15;
-        else if (direction === "right") characterX += 15;
+        if (direction === "left") characterX -= 15; else if (direction === "right") characterX += 15;
         const charRect = character.getBoundingClientRect();
         characterX = Math.max(charRect.width / 2, Math.min(window.innerWidth - (charRect.width / 2), characterX));
         updateCharacterPosition();
