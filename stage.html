@@ -37,11 +37,11 @@
     }
     #character {
       position: absolute;
-      bottom: 20px;
+      bottom: 80px; /* 20px→80pxに変更してスマホでも見える位置に */
       left: 50%;
       transform: translateX(-50%);
-      max-height: 25vh; /* サイズを40vh→25vhに縮小 */
-      max-width: 120px; /* 幅も制限してバランス調整 */
+      max-height: 25vh;
+      max-width: 120px;
       z-index: 5;
       /* 画像の長押しメニューを完全に防ぐ */
       -webkit-user-drag: none;
@@ -142,23 +142,47 @@
     /* ボタンのスタイル強化 */
     .control-btn {
       position: fixed;
-      bottom: 20px;
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
+      bottom: 15px; /* ボタンも少し上に移動 */
+      width: 55px; /* 少し小さく */
+      height: 55px;
+      font-size: 22px;
       border-radius: 50%;
       border: none;
-      background: rgba(0,0,0,0.5);
+      background: linear-gradient(145deg, 
+        rgba(255, 182, 193, 0.8) 0%,
+        rgba(255, 105, 180, 0.7) 100%
+      );
       color: white;
       z-index: 20;
       /* タッチ操作の最適化 */
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       cursor: pointer;
+      /* 美しい影を追加 */
+      box-shadow: 
+        0 4px 12px rgba(255, 105, 180, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
     }
-    .control-btn:active {
-      background: rgba(0,0,0,0.7);
-      transform: scale(0.95);
+    /* スマホ対応の追加CSS */
+    @media (max-height: 600px) {
+      #character {
+        bottom: 90px; /* 小さな画面ではさらに上に */
+        max-height: 20vh; /* サイズも少し小さく */
+      }
+      .control-btn {
+        bottom: 10px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+    }
+    
+    @media (max-height: 500px) {
+      #character {
+        bottom: 100px;
+        max-height: 18vh;
+      }
     }
   </style>
 </head>
