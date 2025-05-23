@@ -514,6 +514,9 @@
     const MAX_TIME_LEFT = 90; // 時間増加アイテムによる最大時間
     const MAX_LEVEL = 5;    // ★★★ 最大レベル設定 ★★★
     let level = 1;
+    // ★★★ 追加: レベルアップに必要なスコアの閾値 ★★★
+    // levelThresholds[i] は、レベル (i+1) になるために必要な最低スコア
+    const levelThresholds = [0, 30, 80, 150, 250]; // Lv1, Lv2, Lv3, Lv4, Lv5 の閾値
     let combo = 0;
     let maxCombo = 0;
     let gameInterval; // createItemのインターバルID (startGame内で代入)
@@ -555,14 +558,19 @@
       character.style.left = `${characterX}px`;
     }
 
-    // ★★★ 最大レベルを考慮したレベル計算 ★★★
+    // ★★★ 最大レベルと新しい閾値を考慮したレベル計算 ★★★
     function calculateLevel() {
-      const calculated = Math.floor(score / 100) + 1;
-      return Math.min(calculated, MAX_LEVEL); // MAX_LEVEL を超えないようにする
-    }
-
-    function getSpawnRate() {
-      return Math.max(150, 700 - (level * 40));
+      let newCalculatedLevel = 1;
+      // 現在のスコアがどのレベルの閾値を超えているかを確認
+      for (let i = 0; i < levelThresholds.length; i++) {
+        if (score >= levelThresholds[i]) {
+          newCalculatedLevel = i + 1; // 配列のインデックス+1がレベルになる
+        } else {
+          // スコアが次の閾値に達していなければループを抜ける
+          break;
+        }
+      }
+      return Math.min(newCalculatedLevel, MAX_LEVEL); // 念のためMAX_LEVELで制限
     }
 
     function updateScore(points = 1) {
@@ -573,14 +581,17 @@
       scoreDisplay.innerText = score;
       comboDisplay.innerText = combo;
 
-      level = calculateLevel(); // 最大レベルを考慮
+      level = calculateLevel(); // 新しいレベル計算関数を呼び出す
       levelDisplay.innerText = level;
 
-      if (level > previousLevel && previousLevel < MAX_LEVEL) { // MAX_LEVELに達した後はレベルアップ表示しない
-        showLevelUp();
-      } else if (level === MAX_LEVEL && previousLevel < MAX_LEVEL) {
-        // MAXレベル到達時の特別な表示など (任意)
-        showLevelUp("MAX LEVEL REACHED!"); // メッセージをカスタマイズ可能
+      if (level > previousLevel) { // レベルアップした場合のみ表示
+        if (level === MAX_LEVEL && previousLevel < MAX_LEVEL) {
+          showLevelUp(`MAX LEVEL ${MAX_LEVEL} 到達!`);
+        } else if (level < MAX_LEVEL) {
+          showLevelUp(`LEVEL ${level}!`);
+        }
+        // MAX_LEVELに到達したら、それ以降のレベルアップメッセージは表示しない
+        // (または、レベルは内部的に上がり続けるが、表示はMAX_LEVELのままという方法もある)
       }
 
 
@@ -592,7 +603,6 @@
       }
       if (points >= 5) showSpecialEffect();
     }
-
     function resetCombo() {
       combo = 0;
       comboDisplay.innerText = combo;
