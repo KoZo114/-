@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ゲームステージ</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+      /* スマホの長押しメニューを防ぐ */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
     body {
       width: 100vw;
       height: 100vh;
@@ -15,6 +26,9 @@
       background-size: cover;
       background-position: center;
       font-family: sans-serif;
+      /* タッチ操作の最適化 */
+      touch-action: manipulation;
+      -webkit-overflow-scrolling: touch;
     }
     #character {
       position: absolute;
@@ -23,6 +37,13 @@
       transform: translateX(-50%);
       max-height: 40vh;
       z-index: 5;
+      /* 画像の長押しメニューを完全に防ぐ */
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      user-drag: none;
+      pointer-events: auto;
     }
     #character.jump {
       animation: jump 0.6s ease;
@@ -66,6 +87,7 @@
       border-radius: 8px;
       z-index: 10;
       line-height: 1.4;
+      pointer-events: none;
     }
     #gameover {
       position: absolute;
@@ -81,6 +103,27 @@
       display: none;
       z-index: 20;
     }
+    /* ボタンのスタイル強化 */
+    .control-btn {
+      position: fixed;
+      bottom: 20px;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      z-index: 20;
+      /* タッチ操作の最適化 */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+    .control-btn:active {
+      background: rgba(0,0,0,0.7);
+      transform: scale(0.95);
+    }
   </style>
 </head>
 <body>
@@ -93,34 +136,88 @@
   <div id="gameover">ゲーム終了！</div>
 
   <script>
+    // 長押しメニューを完全に防ぐイベントリスナー
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, { passive: false });
+
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+      return false;
+    }, { passive: false });
+
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+      return false;
+    }, { passive: false });
+
+    // iOS Safariの長押しメニューを防ぐ
+    document.addEventListener('touchstart', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
     const character = document.getElementById("character");
     const scoreDisplay = document.getElementById("score");
     const highscoreDisplay = document.getElementById("highscore");
     const timerDisplay = document.getElementById("timer");
     const gameover = document.getElementById("gameover");
-    const se = new Audio("kirarin.mp3");
-
-    const bgm = new Audio("bgm.mp3");
-    bgm.loop = true;
-    bgm.volume = 0.5;
+    
+    // 音声ファイルの処理（エラーハンドリング追加）
+    let se, bgm;
+    try {
+      se = new Audio("kirarin.mp3");
+      bgm = new Audio("bgm.mp3");
+      bgm.loop = true;
+      bgm.volume = 0.5;
+    } catch (error) {
+      console.log("音声ファイルの読み込みに失敗しました");
+      se = { play: () => {}, currentTime: 0 };
+      bgm = { play: () => Promise.resolve(), loop: true, volume: 0.5 };
+    }
 
     document.body.addEventListener("click", () => {
-      bgm.play().catch(() => {});
+      if (bgm.play) bgm.play().catch(() => {});
     }, { once: true });
 
     let score = 0;
-    let highscore = localStorage.getItem("highscore") || 0;
+    let highscore = 0; // localStorageエラーを避けるため初期化
     let timeLeft = 30;
     let gameInterval;
 
+    // localStorageのエラーハンドリング
+    try {
+      highscore = localStorage.getItem("highscore") || 0;
+    } catch (error) {
+      console.log("ローカルストレージにアクセスできません");
+    }
+
     highscoreDisplay.innerText = highscore;
 
-    const image = localStorage.getItem("selectedImage");
-    if (image) {
-      character.src = image;
-    } else {
-      alert("キャラが選ばれていません。戻ります。");
-      window.location.href = "index.html";
+    // 画像設定のエラーハンドリング
+    try {
+      const image = localStorage.getItem("selectedImage");
+      if (image) {
+        character.src = image;
+      } else {
+        // デフォルト画像やプレースホルダーを設定
+        character.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzRGOEZGRiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMTIiPuOCreODo+ODqeOCr+OCv+ODvDwvdGV4dD48L3N2Zz4=";
+      }
+    } catch (error) {
+      console.log("画像の設定に失敗しました");
+      character.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzRGOEZGRiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMTIiPuOCreODo+ODqeOCr+OCv+ODvDwvdGV4dD48L3N2Zz4=";
     }
 
     let characterX = window.innerWidth / 2;
@@ -139,18 +236,21 @@
       updateCharacterPosition();
     });
 
-    character.addEventListener("click", () => {
+    character.addEventListener("click", (e) => {
+      e.preventDefault();
       if (!character.classList.contains("jump")) {
         character.classList.add("jump");
         setTimeout(() => character.classList.remove("jump"), 600);
       }
-    });
+    }, { passive: false });
 
     function updateScore() {
       score++;
       scoreDisplay.innerText = score;
-      se.currentTime = 0;
-      se.play();
+      if (se.play) {
+        se.currentTime = 0;
+        se.play().catch(() => {});
+      }
     }
 
     function createPetal() {
@@ -176,13 +276,13 @@
       }, 100);
 
       setTimeout(() => {
-        petal.remove();
+        if (petal.parentNode) petal.remove();
         clearInterval(checkCollision);
       }, 6000);
     }
 
     function startGame() {
-      bgm.play().catch(() => {});
+      if (bgm.play) bgm.play().catch(() => {});
       gameInterval = setInterval(() => {
         createPetal();
       }, 400);
@@ -201,8 +301,12 @@
     function endGame() {
       gameover.style.display = "block";
       if (score > highscore) {
-        localStorage.setItem("highscore", score);
-        highscoreDisplay.innerText = score;
+        try {
+          localStorage.setItem("highscore", score);
+          highscoreDisplay.innerText = score;
+        } catch (error) {
+          console.log("ハイスコアの保存に失敗しました");
+        }
       }
     }
 
@@ -210,21 +314,13 @@
 
     const leftBtn = document.createElement("button");
     leftBtn.innerText = "◀";
-    leftBtn.style.cssText = `
-      position: fixed; bottom: 20px; left: 20px;
-      width: 60px; height: 60px; font-size: 24px;
-      border-radius: 50%; border: none;
-      background: rgba(0,0,0,0.5); color: white; z-index: 20;
-    `;
+    leftBtn.className = "control-btn";
+    leftBtn.style.left = "20px";
 
     const rightBtn = document.createElement("button");
     rightBtn.innerText = "▶";
-    rightBtn.style.cssText = `
-      position: fixed; bottom: 20px; right: 20px;
-      width: 60px; height: 60px; font-size: 24px;
-      border-radius: 50%; border: none;
-      background: rgba(0,0,0,0.5); color: white; z-index: 20;
-    `;
+    rightBtn.className = "control-btn";
+    rightBtn.style.right = "20px";
 
     document.body.appendChild(leftBtn);
     document.body.appendChild(rightBtn);
@@ -249,26 +345,79 @@
       moveInterval = null;
     }
 
-    leftBtn.addEventListener("touchstart", () => startMove("left"));
-    rightBtn.addEventListener("touchstart", () => startMove("right"));
-    leftBtn.addEventListener("touchend", stopMove);
-    rightBtn.addEventListener("touchend", stopMove);
+    // タッチイベントの改善（長押しメニュー防止）
+    leftBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      startMove("left");
+    }, { passive: false });
 
+    rightBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      startMove("right");
+    }, { passive: false });
+
+    leftBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopMove();
+    }, { passive: false });
+
+    rightBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopMove();
+    }, { passive: false });
+
+    // マウスイベントも追加（PC対応）
+    leftBtn.addEventListener("mousedown", () => startMove("left"));
+    rightBtn.addEventListener("mousedown", () => startMove("right"));
+    leftBtn.addEventListener("mouseup", stopMove);
+    rightBtn.addEventListener("mouseup", stopMove);
+    leftBtn.addEventListener("mouseleave", stopMove);
+    rightBtn.addEventListener("mouseleave", stopMove);
+
+    // スワイプ操作の改善
     let touchStartX = null;
+    let touchStartY = null;
+
     document.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].clientX;
-    });
+      touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+
     document.addEventListener("touchend", (e) => {
-      if (touchStartX === null) return;
+      if (touchStartX === null || touchStartY === null) return;
+      
       const deltaX = e.changedTouches[0].clientX - touchStartX;
-      if (deltaX > 50) {
-        characterX += 20;
-      } else if (deltaX < -50) {
-        characterX -= 20;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      
+      // 縦スワイプが大きい場合は無視
+      if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        touchStartX = null;
+        touchStartY = null;
+        return;
       }
+      
+      if (Math.abs(deltaX) > 50) {
+        if (deltaX > 0) {
+          characterX += 20;
+        } else {
+          characterX -= 20;
+        }
+        characterX = Math.max(0, Math.min(window.innerWidth, characterX));
+        updateCharacterPosition();
+      }
+      
+      touchStartX = null;
+      touchStartY = null;
+    }, { passive: true });
+
+    // リサイズ対応
+    window.addEventListener('resize', () => {
       characterX = Math.max(0, Math.min(window.innerWidth, characterX));
       updateCharacterPosition();
-      touchStartX = null;
     });
   </script>
 </body>
