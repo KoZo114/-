@@ -32,8 +32,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* (省略されたCSSスタイル ... 前回提示のものをそのまま使用してください) */
-    /* パーティクル背景効果 */
     .bg-particle {
       position: absolute;
       background: rgba(255, 182, 193, 0.3);
@@ -55,9 +53,9 @@
       bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      max-height: 25vh; /* キャラクターの高さに合わせて調整 */
-      max-width: 120px;  /* キャラクターの幅に合わせて調整 */
-      height: auto;      /* アスペクト比を保つ */
+      max-height: 25vh;
+      max-width: 120px;
+      height: auto;
       z-index: 5;
       filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
       transition: all 0.3s ease;
@@ -79,7 +77,6 @@
       100% { transform: translateX(-50%) translateY(0); }
     }
 
-    /* 新しいアイテムタイプ */
     .petal {
       position: absolute;
       width: 35px;
@@ -163,6 +160,34 @@
       animation: star-spin 2s linear infinite;
     }
 
+    /* ★★★ 追加: 時間増加アイテムのスタイル ★★★ */
+    .time-plus {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, #fafad2 0%, #eee8aa 50%, #daa520 100%); /* ゴールドっぽい砂時計色 */
+      border-radius: 50%;
+      filter: drop-shadow(0 0 8px rgba(218, 165, 32, 0.7)); /* ゴールドの影 */
+      animation: fall-time-plus linear; /* アニメーション名を変更 */
+    }
+
+    .time-plus::before {
+      content: '⌛️';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 25px;
+      animation: time-pulse 1.5s ease-in-out infinite alternate; /* 独自のパルスアニメーション */
+    }
+    @keyframes time-pulse {
+        0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.7; }
+        50% { transform: translate(-50%, -50%) scale(1.1) rotate(10deg); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.7; }
+    }
+    /* ★★★ ここまで時間増加アイテムスタイル ★★★ */
+
+
     @keyframes star-spin {
       0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
       50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
@@ -198,9 +223,11 @@
       100% { transform: translateY(100vh) rotate(480deg) scale(1); opacity: 1; }
     }
 
-    @keyframes fall-bomb {
-      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(180deg); opacity: 1; }
+    @keyframes fall-bomb { /* 爆弾は少し速く、不規則に落ちるイメージ */
+      0% { transform: translateY(-50px) rotate(0deg) scale(1); opacity: 1; }
+      30% { transform: translateY(30vh) rotate(-20deg) scale(1.05); }
+      60% { transform: translateY(60vh) rotate(15deg) scale(1.1); }
+      100% { transform: translateY(100vh) rotate(10deg) scale(1); opacity: 1; }
     }
 
     @keyframes fall-powerup {
@@ -209,6 +236,14 @@
       50% { transform: translateY(50vh) scale(1.2); }
       75% { transform: translateY(75vh) scale(1.1); }
       100% { transform: translateY(100vh) scale(1); opacity: 1; }
+    }
+    /* ★★★ 追加: 時間増加アイテムの落下アニメーション ★★★ */
+    @keyframes fall-time-plus { /* パワーアップと似たようなゆっくりとした揺れ */
+      0% { transform: translateY(-50px) translateX(0px) rotate(0deg) scale(0.9); opacity: 0.7;}
+      25% { opacity: 1; transform: translateY(25vh) translateX(10px) rotate(5deg) scale(1);}
+      50% { transform: translateY(50vh) translateX(-10px) rotate(-5deg) scale(1.1);}
+      75% { transform: translateY(75vh) translateX(5px) rotate(2deg) scale(1);}
+      100% { transform: translateY(100vh) translateX(0px) rotate(0deg) scale(0.9); opacity: 1;}
     }
 
     #scoreboard {
@@ -280,7 +315,7 @@
 
     #gameover {
       position: absolute;
-      top: 50%; /* 中央に表示するため調整 */
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 28px;
@@ -295,9 +330,8 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       border: 2px solid rgba(255, 255, 255, 0.2);
     }
-    /* ★★★ 追加: ゲームオーバー画面内のボタンのスタイル ★★★ */
     #return-to-select-btn {
-        background-color: #f08080; /* 明るい赤系 */
+        background-color: #f08080;
         color: white;
         border: none;
         padding: 12px 25px;
@@ -305,13 +339,13 @@
         text-decoration: none;
         display: inline-block;
         font-size: 16px;
-        margin-top: 25px; /* 上の要素との間隔 */
+        margin-top: 25px;
         cursor: pointer;
         border-radius: 8px;
         transition: background-color 0.3s ease;
     }
     #return-to-select-btn:hover {
-        background-color: #cd5c5c; /* 少し濃い赤系 */
+        background-color: #cd5c5c;
     }
 
 
@@ -346,7 +380,6 @@
         0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
-    /* パワーアップ効果表示 */
     .power-effect {
       position: fixed;
       bottom: 150px;
@@ -367,7 +400,6 @@
       100% { box-shadow: 0 0 20px rgba(147, 112, 219, 1); }
     }
 
-    /* レスポンシブデザイン改善 */
     @media (max-height: 600px) {
       #character {
         bottom: 90px;
@@ -392,7 +424,6 @@
       }
     }
 
-    /* レベルアップエフェクト */
     .level-up-effect {
       position: fixed;
       top: 30%;
@@ -447,12 +478,10 @@
   </div>
 
   <script>
-    // イベントリスナーの設定（長押しメニュー防止）
     document.addEventListener('contextmenu', e => { e.preventDefault(); return false; }, { passive: false });
     document.addEventListener('selectstart', e => { e.preventDefault(); return false; }, { passive: false });
     document.addEventListener('dragstart', e => { e.preventDefault(); return false; }, { passive: false });
 
-    // 要素の取得
     const character = document.getElementById("character");
     const scoreDisplay = document.getElementById("score");
     const highscoreDisplay = document.getElementById("highscore");
@@ -465,11 +494,8 @@
     const gameover = document.getElementById("gameover");
     const finalScore = document.getElementById("final-score");
     const finalLevel = document.getElementById("final-level");
-    // ★★★ 追加: ゲームオーバー画面のボタン要素を取得 ★★★
     const returnToSelectBtn = document.getElementById("return-to-select-btn");
 
-
-    // localStorageからキャラクター情報を読み込む
     const selectedImageFile = localStorage.getItem("selectedImage");
     const selectedCharName = localStorage.getItem("selectedName");
 
@@ -477,25 +503,25 @@
       character.src = selectedImageFile;
       character.alt = selectedCharName;
     } else {
-      character.src = "shaoran_web.PNG"; // デフォルト画像
+      character.src = "shaoran_web.PNG";
       character.alt = "シャオラン";
       console.warn("キャラクター選択情報がlocalStorageに見つかりませんでした。デフォルトキャラクターを表示します。");
     }
 
-    // ゲーム変数
     let score = 0;
     let highscore = 0;
-    let timeLeft = 60;
+    let timeLeft = 60; // 初期時間60秒
+    const MAX_TIME_LEFT = 90; // 時間増加アイテムによる最大時間
+    const MAX_LEVEL = 5;    // ★★★ 最大レベル設定 ★★★
     let level = 1;
     let combo = 0;
     let maxCombo = 0;
-    let gameInterval;
+    let gameInterval; // createItemのインターバルID (startGame内で代入)
     let bgParticleInterval;
     let isPowerUpActive = false;
     let powerUpEndTime = 0;
     let characterX = window.innerWidth / 2;
 
-    // サウンド設定
     let se, bgm;
     try {
       se = new Audio("kirarin.mp3");
@@ -508,108 +534,84 @@
       bgm = { play: () => Promise.resolve(), loop: true, volume: 0.3 };
     }
 
-    // ハイスコア初期化
     try {
-      highscore = parseInt(localStorage.getItem("sakuraGameHighscore")) || 0;
+      highscore = parseInt(localStorage.getItem("sakuraGameHighscoreV2")) || 0; // キー名を少し変更
     } catch (error) {
       console.log("ローカルストレージのハイスコアにアクセスできません");
     }
     highscoreDisplay.innerText = highscore;
 
-    // 背景パーティクル生成
     function createBackgroundParticle() {
-      // (内容は前回と同じ)
       const particle = document.createElement("div");
       particle.className = "bg-particle";
       particle.style.left = Math.random() * window.innerWidth + "px";
       particle.style.width = particle.style.height = (Math.random() * 8 + 4) + "px";
       particle.style.animationDuration = (Math.random() * 10 + 8) + "s";
       document.body.appendChild(particle);
-
-      setTimeout(() => {
-        if (particle.parentNode) particle.remove();
-      }, 20000);
+      setTimeout(() => { if (particle.parentNode) particle.remove(); }, 20000);
     }
 
-    // キャラクター位置更新
     function updateCharacterPosition() {
       character.style.left = `${characterX}px`;
     }
 
-    // レベル計算
+    // ★★★ 最大レベルを考慮したレベル計算 ★★★
     function calculateLevel() {
-      return Math.floor(score / 100) + 1;
+      const calculated = Math.floor(score / 100) + 1;
+      return Math.min(calculated, MAX_LEVEL); // MAX_LEVEL を超えないようにする
     }
 
-    // 難易度に基づくアイテム生成間隔
     function getSpawnRate() {
       return Math.max(150, 700 - (level * 40));
     }
 
-    // スコア更新
     function updateScore(points = 1) {
-      // (内容は前回と同じ)
       const previousLevel = level;
-
-      if (isPowerUpActive) {
-        points *= 2;
-      }
-
+      if (isPowerUpActive) points *= 2;
       score += points;
       combo++;
       scoreDisplay.innerText = score;
       comboDisplay.innerText = combo;
 
-      level = calculateLevel();
+      level = calculateLevel(); // 最大レベルを考慮
       levelDisplay.innerText = level;
 
-      if (level > previousLevel) {
+      if (level > previousLevel && previousLevel < MAX_LEVEL) { // MAX_LEVELに達した後はレベルアップ表示しない
         showLevelUp();
+      } else if (level === MAX_LEVEL && previousLevel < MAX_LEVEL) {
+        // MAXレベル到達時の特別な表示など (任意)
+        showLevelUp("MAX LEVEL REACHED!"); // メッセージをカスタマイズ可能
       }
 
-      if (combo > 1) {
-        showComboPopup();
-      }
 
-      if (combo > maxCombo) {
-        maxCombo = combo;
-      }
-
+      if (combo > 1) showComboPopup();
+      if (combo > maxCombo) maxCombo = combo;
       if (se && typeof se.play === 'function') {
         se.currentTime = 0;
         se.play().catch(err => console.warn("効果音再生エラー:", err));
       }
-
-      if (points >= 5) {
-        showSpecialEffect();
-      }
+      if (points >= 5) showSpecialEffect();
     }
 
-    // コンボリセット
     function resetCombo() {
       combo = 0;
       comboDisplay.innerText = combo;
     }
 
-    // コンボポップアップ表示
     function showComboPopup() {
       comboPopup.textContent = `${combo} COMBO!`;
       comboPopup.style.display = 'block';
-      setTimeout(() => {
-        comboPopup.style.display = 'none';
-      }, 1000);
+      setTimeout(() => { comboPopup.style.display = 'none'; }, 1000);
     }
 
-    // レベルアップ表示
-    function showLevelUp() {
-      levelUpEffect.textContent = `LEVEL ${level}!`;
+    // ★★★ レベルアップ表示関数を少し変更 (メッセージを受け取れるように) ★★★
+    function showLevelUp(message = `LEVEL ${level}!`) {
+      levelUpEffect.textContent = message;
       levelUpEffect.style.display = 'block';
-      setTimeout(() => {
-        levelUpEffect.style.display = 'none';
-      }, 2000);
+      setTimeout(() => { levelUpEffect.style.display = 'none'; }, 2000);
     }
 
-    // 特別エフェクト
+
     function showSpecialEffect() {
       scoreDisplay.style.transform = 'scale(1.3)';
       scoreDisplay.style.color = '#FFD700';
@@ -620,9 +622,7 @@
     }
 
     let powerUpTimerId = null;
-    // パワーアップ効果
     function activatePowerUp() {
-      // (内容は前回と同じ)
       if (isPowerUpActive) {
         powerUpEndTime += 10000;
         if (powerUpTimerId) clearInterval(powerUpTimerId);
@@ -633,7 +633,6 @@
         powerEffect.textContent = '✨ダブルスコア中！';
         powerEffect.style.display = 'block';
       }
-
       powerUpTimerId = setInterval(() => {
         const remaining = Math.ceil((powerUpEndTime - Date.now()) / 1000);
         if (remaining <= 0) {
@@ -646,9 +645,7 @@
       }, 100);
     }
 
-    // パワーアップ解除
     function deactivatePowerUp() {
-      // (内容は前回と同じ)
       isPowerUpActive = false;
       character.classList.remove('powerup');
       powerEffect.style.display = 'none';
@@ -658,30 +655,70 @@
       }
     }
 
-    // アイテム生成
+    // ★★★ アイテム生成ロジック変更 ★★★
     function createItem() {
-      // (内容は前回と同じ)
       if (timeLeft <= 0) return;
 
       const item = document.createElement("div");
       const rand = Math.random();
-      let itemType = "normal";
+      let itemType = "normal"; // デフォルト
 
-      if (rand < 0.05 && level >= 3) {
+      // --- 確率設定 ---
+      let probBomb = 0;
+      if (level >= 2) { // 爆弾はレベル2から
+        probBomb = Math.min(0.05 + (level - 2) * 0.03, 0.14); // L2:5%, L3:8%, L4:11%, L5:14%
+      }
+      const probTimePlus = 0.08; // 時間増加アイテム: 8% (レベル1から)
+      let probPowerUp = 0;
+      if (level >= 2) { // パワーアップはレベル2から
+          probPowerUp = 0.07; // 7%
+      }
+      const probGolden = 0.15; // 金: 15%
+      const probSpecial = 0.20; // 特: 20%
+      // 残りが通常
+
+      // --- アイテムタイプ決定 ---
+      let cumulativeProb = 0;
+
+      cumulativeProb += probBomb;
+      if (rand < cumulativeProb && level >= 2) { // level >=2 条件をここでも確認
         itemType = "bomb";
-      } else if (rand < 0.1 && level >= 2) {
-        itemType = "powerup";
-      } else if (rand < 0.25) {
-        itemType = "golden";
-      } else if (rand < 0.45) {
-        itemType = "special";
+      } else {
+        cumulativeProb += probTimePlus;
+        if (rand < cumulativeProb) {
+          itemType = "timePlus";
+        } else {
+          cumulativeProb += probPowerUp;
+          if (rand < cumulativeProb && level >= 2) { // level >=2 条件をここでも確認
+             itemType = "powerup";
+          } else {
+            cumulativeProb += probGolden;
+            if (rand < cumulativeProb) {
+              itemType = "golden";
+            } else {
+              cumulativeProb += probSpecial;
+              if (rand < cumulativeProb) {
+                itemType = "special";
+              } else {
+                itemType = "normal";
+              }
+            }
+          }
+        }
       }
 
+
+      // --- DOM生成と設定 ---
       switch(itemType) {
         case "bomb":
           item.className = "bomb";
           item.dataset.type = "bomb";
           item.dataset.points = "-10";
+          break;
+        case "timePlus": // ★★★ 時間増加アイテム ★★★
+          item.className = "time-plus";
+          item.dataset.type = "timePlus";
+          // item.dataset.timeValue = "5"; // 時間増加量 (今回は直接処理)
           break;
         case "powerup":
           item.className = "power-up";
@@ -698,7 +735,7 @@
           item.dataset.type = "special";
           item.dataset.points = "2";
           break;
-        default:
+        default: // normal
           item.className = "petal";
           item.dataset.type = "normal";
           item.dataset.points = "1";
@@ -718,29 +755,26 @@
         const rect1 = item.getBoundingClientRect();
         const rect2 = character.getBoundingClientRect();
 
-        if (
-          rect1.top < rect2.bottom &&
-          rect1.bottom > rect2.top &&
-          rect1.left < rect2.right &&
-          rect1.right > rect2.left
-        ) {
+        if ( rect1.top < rect2.bottom && rect1.bottom > rect2.top && rect1.left < rect2.right && rect1.right > rect2.left ) {
           const type = item.dataset.type;
-          const points = parseInt(item.dataset.points);
 
           if (type === "bomb") {
-            score = Math.max(0, score + points);
+            score = Math.max(0, score + parseInt(item.dataset.points)); // dataset.points は "-10"
             scoreDisplay.innerText = score;
             resetCombo();
             document.body.style.background = '#ff6b6b';
             setTimeout(() => {
               document.body.style.background = 'linear-gradient(135deg, #ffeef5 0%, #ffe8f0 25%, #f8e8ff 50%, #e8f0ff 75%, #f0f8ff 100%)';
             }, 150);
+          } else if (type === "timePlus") { // ★★★ 時間増加アイテムの処理 ★★★
+            timeLeft = Math.min(timeLeft + 5, MAX_TIME_LEFT); // 5秒プラス、上限MAX_TIME_LEFT秒
+            timerDisplay.innerText = timeLeft;
+            // 時間増加の特別な効果音やエフェクトをここに追加しても良い
           } else if (type === "powerup") {
             activatePowerUp();
-          } else {
-            updateScore(points);
+          } else { // 花びら系アイテム
+            updateScore(parseInt(item.dataset.points));
           }
-
           item.remove();
           clearInterval(checkCollision);
         }
@@ -749,7 +783,7 @@
       setTimeout(() => {
         if (item.parentNode) {
           item.remove();
-          if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup") {
+          if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup" && item.dataset.type !== "timePlus") {
             resetCombo();
           }
         }
@@ -760,16 +794,12 @@
     let gameTimerId = null;
     let itemSpawnerId = null;
 
-    // ゲーム開始
     function startGame() {
-      // (内容は前回と同じ)
       if (bgm && typeof bgm.play === 'function' && bgm.paused) {
         bgm.play().catch(err => console.warn("BGM再生に失敗:", err));
       }
-
       itemSpawnerId = setInterval(createItem, getSpawnRate());
       bgParticleInterval = setInterval(createBackgroundParticle, 500);
-
       gameTimerId = setInterval(() => {
         if (timeLeft <= 0) {
             clearInterval(gameTimerId);
@@ -779,58 +809,39 @@
             endGame();
             return;
         }
-
         timeLeft--;
         timerDisplay.innerText = timeLeft;
-
-        clearInterval(itemSpawnerId);
+        clearInterval(itemSpawnerId); // 難易度変更のため一旦クリア
         itemSpawnerId = setInterval(createItem, getSpawnRate());
-
       }, 1000);
     }
 
-    // ゲーム終了
     function endGame() {
       if (bgm && typeof bgm.pause === 'function') bgm.pause();
-
       finalScore.innerText = score;
       finalLevel.innerText = level;
-      gameover.style.display = "block"; // ゲームオーバー表示
-
+      gameover.style.display = "block";
       if (score > highscore) {
         highscore = score;
         try {
-          localStorage.setItem("sakuraGameHighscore", highscore);
+          localStorage.setItem("sakuraGameHighscoreV2", highscore);
           highscoreDisplay.innerText = highscore;
-        } catch (error) {
-          console.log("ハイスコアの保存に失敗しました");
-        }
+        } catch (error) { console.log("ハイスコアの保存に失敗しました"); }
       }
-      document.querySelectorAll('.petal, .bomb, .power-up, .bg-particle').forEach(el => el.remove());
-
-      // ★★★ 追加: キャラクター選択に戻るボタンのイベントリスナー ★★★
+      document.querySelectorAll('.petal, .bomb, .power-up, .time-plus, .bg-particle').forEach(el => el.remove());
       if (returnToSelectBtn) {
         returnToSelectBtn.addEventListener("click", () => {
-          window.location.href = "index.html"; // index.htmlに遷移
+          window.location.href = "index.html";
         });
       }
     }
 
-    // キャラクター操作 (キーボード)
     document.addEventListener("keydown", (e) => {
-      // (内容は前回と同じ)
       if (timeLeft <= 0) return;
       let moved = false;
-      if (e.key === "ArrowLeft") {
-        characterX -= 30;
-        moved = true;
-      } else if (e.key === "ArrowRight") {
-        characterX += 30;
-        moved = true;
-      } else if (e.key === " " || e.key === "ArrowUp") {
-        e.preventDefault();
-        jump();
-      }
+      if (e.key === "ArrowLeft") { characterX -= 30; moved = true; }
+      else if (e.key === "ArrowRight") { characterX += 30; moved = true; }
+      else if (e.key === " " || e.key === "ArrowUp") { e.preventDefault(); jump(); }
       if (moved) {
         const charRect = character.getBoundingClientRect();
         characterX = Math.max(charRect.width / 2, Math.min(window.innerWidth - (charRect.width / 2), characterX));
@@ -838,7 +849,6 @@
       }
     });
 
-    // ジャンプ機能
     function jump() {
       if (!character.classList.contains("jump") && timeLeft > 0) {
         character.classList.add("jump");
@@ -846,143 +856,82 @@
       }
     }
 
-    // キャラクター画像クリック/タップでジャンプ
     character.addEventListener("click", (e) => {
       if (timeLeft <= 0) return;
-      e.preventDefault();
-      jump();
+      e.preventDefault(); jump();
     }, { passive: false });
 
-    // コントロールボタンの生成とイベントリスナー
     const leftBtn = document.createElement("button");
-    leftBtn.innerText = "◀";
-    leftBtn.className = "control-btn";
-    leftBtn.style.left = "20px";
-
+    leftBtn.innerText = "◀"; leftBtn.className = "control-btn"; leftBtn.style.left = "20px";
     const rightBtn = document.createElement("button");
-    rightBtn.innerText = "▶";
-    rightBtn.className = "control-btn";
-    rightBtn.style.right = "20px";
-
-    document.body.appendChild(leftBtn);
-    document.body.appendChild(rightBtn);
-    // ★★★ 削除: ジャンプボタンの生成と追加はここで行わない ★★★
-    // const jumpBtn = document.createElement("button"); ... (このブロック全体を削除)
-    // document.body.appendChild(jumpBtn);
+    rightBtn.innerText = "▶"; rightBtn.className = "control-btn"; rightBtn.style.right = "20px";
+    document.body.appendChild(leftBtn); document.body.appendChild(rightBtn);
 
     let moveInterval = null;
     function startMove(direction) {
-      // (内容は前回と同じ)
       if (moveInterval || timeLeft <= 0) return;
       moveInterval = setInterval(() => {
-        if (direction === "left") {
-          characterX -= 15;
-        } else if (direction === "right") {
-          characterX += 15;
-        }
+        if (direction === "left") characterX -= 15;
+        else if (direction === "right") characterX += 15;
         const charRect = character.getBoundingClientRect();
         characterX = Math.max(charRect.width / 2, Math.min(window.innerWidth - (charRect.width / 2), characterX));
         updateCharacterPosition();
       }, 50);
     }
+    function stopMove() { clearInterval(moveInterval); moveInterval = null; }
 
-    function stopMove() {
-      clearInterval(moveInterval);
-      moveInterval = null;
-    }
-
-    // タッチイベント (コントロールボタン)
     leftBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startMove("left"); }, { passive: false });
     rightBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startMove("right"); }, { passive: false });
-    // ★★★ 削除: ジャンプボタンのタッチイベントリスナー ★★★
-    // jumpBtn.addEventListener("touchstart", ... );
-
-    document.addEventListener("touchend", (e) => {
-        if (moveInterval) {
-            stopMove();
-        }
-    }, { passive: false });
-
-
-    // マウスイベント (コントロールボタン)
+    document.addEventListener("touchend", (e) => { if (moveInterval) stopMove(); }, { passive: false });
     leftBtn.addEventListener("mousedown", () => startMove("left"));
     rightBtn.addEventListener("mousedown", () => startMove("right"));
-    // ★★★ 削除: ジャンプボタンのマウスイベントリスナー ★★★
-    // jumpBtn.addEventListener("mousedown", jump);
     document.addEventListener("mouseup", stopMove);
 
-    // スワイプ操作
-    let touchStartX = null;
-    let touchStartY = null;
-    const swipeThreshold = 30;
-
+    let touchStartX = null; let touchStartY = null; const swipeThreshold = 30;
     document.addEventListener("touchstart", (e) => {
-      // (内容は前回と同じ)
       if (timeLeft <= 0 || e.target.classList.contains('control-btn')) return;
-      touchStartX = e.changedTouches[0].clientX;
-      touchStartY = e.changedTouches[0].clientY;
+      touchStartX = e.changedTouches[0].clientX; touchStartY = e.changedTouches[0].clientY;
     }, { passive: true });
-
     document.addEventListener("touchmove", (e) => {
-      // (内容は前回と同じ)
       if (timeLeft <= 0 || !touchStartX || e.target.classList.contains('control-btn')) return;
-      let currentX = e.changedTouches[0].clientX;
-      let deltaX = currentX - touchStartX;
+      let currentX = e.changedTouches[0].clientX; let deltaX = currentX - touchStartX;
       const charRect = character.getBoundingClientRect();
-      const minCharX = charRect.width / 2;
-      const maxCharX = window.innerWidth - (charRect.width / 2);
+      const minCharX = charRect.width / 2; const maxCharX = window.innerWidth - (charRect.width / 2);
       characterX += deltaX * 0.6;
       characterX = Math.max(minCharX, Math.min(maxCharX, characterX));
-      updateCharacterPosition();
-      touchStartX = currentX;
+      updateCharacterPosition(); touchStartX = currentX;
     }, { passive: true });
-
     document.addEventListener("touchend", (e) => {
-      // (内容は前回と同じ)
       if (timeLeft <= 0 || touchStartX === null || touchStartY === null || e.target.classList.contains('control-btn')) {
         touchStartX = null; touchStartY = null; return;
       }
-      const deltaX = e.changedTouches[0].clientX - touchStartX;
-      const deltaY = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -swipeThreshold) {
-        jump();
-      }
-      touchStartX = null;
-      touchStartY = null;
+      const deltaX = e.changedTouches[0].clientX - touchStartX; const deltaY = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -swipeThreshold) jump();
+      touchStartX = null; touchStartY = null;
     }, { passive: true });
 
-
-    // ウィンドウリサイズ対応
     window.addEventListener('resize', () => {
-      // (内容は前回と同じ)
       const charRect = character.getBoundingClientRect();
       characterX = Math.max(charRect.width / 2, Math.min(window.innerWidth - (charRect.width / 2), characterX));
       updateCharacterPosition();
     });
 
-    // 初期キャラクター位置設定 & BGM再生試行
     updateCharacterPosition();
-
     function attemptBgmPlay() {
-        // (内容は前回と同じ)
-        if (bgm && typeof bgm.play === 'function' && bgm.paused) {
-            bgm.play().then(() => {
-                document.body.removeEventListener('click', attemptBgmPlay);
-                document.body.removeEventListener('touchstart', attemptBgmPlay);
-            }).catch(error => {
-                console.warn("BGMの再生試行に失敗しました:", error);
-            });
-        } else if (bgm && !bgm.paused) {
-            document.body.removeEventListener('click', attemptBgmPlay);
-            document.body.removeEventListener('touchstart', attemptBgmPlay);
-        }
+      if (bgm && typeof bgm.play === 'function' && bgm.paused) {
+        bgm.play().then(() => {
+          document.body.removeEventListener('click', attemptBgmPlay);
+          document.body.removeEventListener('touchstart', attemptBgmPlay);
+        }).catch(error => { console.warn("BGMの再生試行に失敗しました:", error); });
+      } else if (bgm && !bgm.paused) {
+        document.body.removeEventListener('click', attemptBgmPlay);
+        document.body.removeEventListener('touchstart', attemptBgmPlay);
+      }
     }
     document.body.addEventListener('click', attemptBgmPlay, {once: true});
     document.body.addEventListener('touchstart', attemptBgmPlay, {once: true});
 
-    // ゲーム開始
     startGame();
-
   </script>
 </body>
 </html>
