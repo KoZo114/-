@@ -13,57 +13,81 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 50%, #ffe4e1 100%); /* 淡い春色のグラデーション */
+      background: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 50%, #ffe4e1 100%);
       font-family: 'Noto Sans JP', sans-serif;
       text-align: center;
+      overflow: hidden; /* パーティクルがはみ出さないように */
     }
     #game-title {
-      font-size: 3.5em; /* 少し大きめに */
-      color: #ff69b4; /* ホットピンク */
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-      margin-bottom: 30px;
-      animation: title-float 3s ease-in-out infinite alternate;
+      font-size: 3.8em; /* 少し大きく */
+      color: #ff69b4;
+      text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25); /* 影を少し濃く */
+      margin-bottom: 40px; /* ボタンとの間隔を調整 */
+      animation: title-float 2.5s ease-in-out infinite alternate;
+      z-index: 10; /* ボタンやパーティクルより手前に */
     }
     @keyframes title-float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+      0% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.03); } /* 浮遊感を強調 */
+      100% { transform: translateY(0px) scale(1); }
     }
     .start-button {
-      padding: 18px 35px;
-      font-size: 1.8em;
+      padding: 20px 40px; /* 少し大きめに */
+      font-size: 2em;    /* 少し大きめに */
       color: white;
-      background: linear-gradient(145deg, #ff7f50, #ff6347); /* コーラルからトマト色 */
+      background: linear-gradient(145deg, #ff7f50, #ff6347);
       border: none;
       border-radius: 15px;
       cursor: pointer;
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      text-transform: uppercase; /* 大文字に */
-      letter-spacing: 1px; /* 文字間隔 */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease-out;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      z-index: 10; /* パーティクルより手前に */
     }
     .start-button:hover {
-      background: linear-gradient(145deg, #ff6347, #ff4500); /* オレンジレッド系 */
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-      transform: translateY(-3px);
+      background: linear-gradient(145deg, #ff6347, #ff4500);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+      transform: translateY(-4px) scale(1.02); /* ホバー時の動きを大きく */
     }
     .start-button:active {
-        transform: translateY(1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transform: translateY(0px) scale(1); /* クリック時の戻りを調整 */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    /* 簡単な桜のパーティクル背景 */
+
+    /* 桜のパーティクル背景 */
     .sakura-particle {
-        position: absolute;
-        background-color: rgba(255, 192, 203, 0.7); /* ピンク */
-        border-radius: 50%;
-        animation: fall-sakura linear infinite;
-        pointer-events: none; /* クリックイベントを妨げないように */
-        z-index: -1; /* タイトルやボタンより後ろに */
+      position: absolute;
+      background-color: rgba(255, 192, 203, 0.8); /* 少し濃いピンク */
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* 花びらっぽい形 */
+      animation: fall-sakura linear infinite;
+      pointer-events: none;
+      z-index: 1; /* タイトルやボタンより後ろに */
+      opacity: 0; /* 初期状態は透明 */
     }
     @keyframes fall-sakura {
-        0% { transform: translateY(-10vh) translateX(0vw) rotate(0deg); opacity: 0; }
-        10% { opacity: 1; }
-        100% { transform: translateY(110vh) translateX(10vw) rotate(720deg); opacity: 0; }
+      0% { transform: translateY(-10vh) translateX(var(--start-x)) rotate(0deg) scale(var(--scale)); opacity: 0; }
+      10% { opacity: 1; }
+      95% { opacity: 0.5; }
+      100% { transform: translateY(110vh) translateX(var(--end-x)) rotate(var(--rotate-end)) scale(var(--scale)); opacity: 0; }
+    }
+
+    /* 星のパーティクルスタイル */
+    .star-particle {
+        position: absolute;
+        background-color: rgba(255, 255, 224, 0.9); /* 薄い黄色 */
+        border-radius: 50%;
+        animation: twinkle-fall linear infinite;
+        pointer-events: none;
+        z-index: 1; /* タイトルやボタンより後ろに */
+        box-shadow: 0 0 6px rgba(255, 255, 224, 0.8), 0 0 12px rgba(255, 255, 224, 0.6);
+        opacity: 0; /* 初期状態は透明 */
+    }
+    @keyframes twinkle-fall {
+        0% { transform: translateY(-15vh) translateX(var(--star-start-x)) scale(var(--star-scale)) rotate(0deg); opacity: 0; }
+        15% { opacity: 1; }
+        85% { opacity: 0.6; }
+        100% { transform: translateY(110vh) translateX(var(--star-end-x)) scale(calc(var(--star-scale) * 0.5)) rotate(720deg); opacity: 0; }
     }
   </style>
 </head>
@@ -71,43 +95,86 @@
   <h1 id="game-title">忍風桜</h1>
   <button class="start-button" onclick="goToCharacterSelect()">ゲーム開始</button>
 
+  <audio id="opening-bgm" src="opbgm.mp3" loop></audio>
+
   <script>
+    const bgm = document.getElementById('opening-bgm');
+
     function goToCharacterSelect() {
-      window.location.href = "character_select.html"; // ステップ1で名前変更したファイルへ
+      if (bgm) {
+        bgm.pause(); // キャラクター選択画面に移動する前にBGMを停止
+        bgm.currentTime = 0; // 次回再生時に最初からになるように
+      }
+      window.location.href = "character_select.html";
     }
 
-    // 桜のパーティクルを生成する簡単なスクリプト
     function createSakuraParticles() {
-        const numParticles = 30; // パーティクルの数
+      const numParticles = 35; // 桜パーティクルの数を少し増やす
+      const body = document.body;
+      for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('sakura-particle');
+        
+        const size = Math.random() * 12 + 6; // 6pxから18pxのサイズ
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size * (Math.random() * 0.3 + 0.6)}px`; // 少し縦長にしたり
+        particle.style.setProperty('--scale', (Math.random() * 0.5 + 0.7).toFixed(2)); // スケールもランダムに
+
+        const startX = `${Math.random() * 100}vw`;
+        particle.style.setProperty('--start-x', startX);
+        // 終点のX座標も少しランダムに揺らす
+        const endXVariance = (Math.random() - 0.5) * 40; // -20vw から +20vw の範囲で揺れ
+        particle.style.setProperty('--end-x', `calc(${startX} + ${endXVariance}vw)`);
+        particle.style.setProperty('--rotate-end', `${Math.random() * 720 + 360}deg`); // 最終回転角度もランダムに
+
+        particle.style.animationDuration = `${Math.random() * 8 + 7}s`; // 7秒から15秒
+        particle.style.animationDelay = `${Math.random() * 10}s`; // 開始タイミング
+        body.appendChild(particle);
+      }
+    }
+
+    function createStarParticles() {
+        const numParticles = 30; // 星パーティクルの数も調整
         const body = document.body;
         for (let i = 0; i < numParticles; i++) {
             const particle = document.createElement('div');
-            particle.classList.add('sakura-particle');
-            const size = Math.random() * 10 + 5; // 5pxから15pxのサイズ
+            particle.classList.add('star-particle');
+            const size = Math.random() * 5 + 1; // 1pxから6pxの小さめの星
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
-            particle.style.left = `${Math.random() * 100}vw`;
-            // X方向の移動をランダムに
-            const xMovement = (Math.random() - 0.5) * 20; // -10vw から +10vw の範囲
-            particle.style.animationDuration = `${Math.random() * 5 + 5}s`; // 5秒から10秒で落ちる
-            particle.style.animationDelay = `${Math.random() * 5}s`; // 開始タイミングをずらす
-            // fall-sakura の translateX を調整するためにカスタムプロパティを設定
-            particle.style.setProperty('--x-movement', `${xMovement}vw`);
+            
+            const starScale = Math.random() * 0.4 + 0.6; // 星のスケール
+            particle.style.setProperty('--star-scale', starScale.toFixed(2));
+
+            const starStartX = `${Math.random() * 100}vw`;
+            particle.style.setProperty('--star-start-x', starStartX);
+            const starEndXVariance = (Math.random() - 0.5) * 30; // -15vw から +15vw
+            particle.style.setProperty('--star-end-x', `calc(${starStartX} + ${starEndXVariance}vw)`);
+
+            particle.style.animationDuration = `${Math.random() * 6 + 5}s`; // 5秒から11秒
+            particle.style.animationDelay = `${Math.random() * 8}s`;
             body.appendChild(particle);
         }
     }
-    // fall-sakura キーフレームを修正してカスタムプロパティを使う
-    // CSS内で以下のように修正することを推奨しますが、ここでは簡単のためJSで生成
-    // @keyframes fall-sakura {
-    //     0% { transform: translateY(-10vh) translateX(0vw) rotate(0deg); opacity: 0; }
-    //     10% { opacity: 1; }
-    //     100% { transform: translateY(110vh) translateX(var(--x-movement)) rotate(720deg); opacity: 0; }
-    // }
-    // 上記のCSSでのvar(--x-movement)が理想ですが、
-    // 今回はCSSの@keyframes fall-sakuraのtranslateXを固定値 (10vw) のままにしています。
-    // より自然にするには各パーティクルに個別のX移動アニメーションを適用する必要があります。
 
-    createSakuraParticles(); // ページ読み込み時にパーティクル生成
+    window.onload = function() {
+      if (bgm) {
+        bgm.volume = 0.5; // BGMの音量 (0.0 から 1.0)
+        bgm.play().catch(error => {
+          console.warn("オープニングBGMの自動再生に失敗:", error, "ユーザー操作後に再生を試みます。");
+          const playBgmOnFirstInteraction = () => {
+            bgm.play().catch(e => console.error("インタラクション後のBGM再生失敗:", e));
+            document.body.removeEventListener('click', playBgmOnFirstInteraction, true);
+            document.body.removeEventListener('touchstart', playBgmOnFirstInteraction, true);
+          };
+          // captureフェーズでリスナーを登録して、start-buttonのクリックより先に発火させる
+          document.body.addEventListener('click', playBgmOnFirstInteraction, true);
+          document.body.addEventListener('touchstart', playBgmOnFirstInteraction, true);
+        });
+      }
+      createSakuraParticles();
+      createStarParticles();
+    };
   </script>
 </body>
 </html>
