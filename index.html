@@ -13,16 +13,15 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      /* ★★★ 背景を黒のグラデーションに変更 ★★★ */
       background: linear-gradient(135deg, #1c1c1c 0%, #3c3c3c 100%); /* 暗いチャコール系のグラデーション */
       font-family: 'Noto Sans JP', sans-serif;
       text-align: center;
-      overflow: hidden; /* パーティクルがはみ出さないように */
+      overflow: hidden;
     }
     #game-title {
       font-size: 3.8em;
-      color: #ff69b4; /* ホットピンク - 黒背景で映えます */
-      text-shadow: 0 0 8px rgba(255, 105, 180, 0.7), 0 0 12px rgba(255, 105, 180, 0.5); /* ネオン風の影 */
+      color: #ff69b4;
+      text-shadow: 0 0 8px rgba(255, 105, 180, 0.7), 0 0 12px rgba(255, 105, 180, 0.5);
       margin-bottom: 40px;
       animation: title-float 2.5s ease-in-out infinite alternate;
       z-index: 10;
@@ -36,19 +35,18 @@
       padding: 20px 40px;
       font-size: 2em;
       color: white;
-      /* ボタンの色も背景に合わせて少し調整 (例: 少し明るめの色や、メタリックな感じも合います) */
-      background: linear-gradient(145deg, #6A5ACD, #483D8B); /* スレートブルーからダークスレートブルー */
+      background: linear-gradient(145deg, #6A5ACD, #483D8B);
       border: none;
       border-radius: 15px;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 影を少し強く */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
       transition: all 0.2s ease-out;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       z-index: 10;
     }
     .start-button:hover {
-      background: linear-gradient(145deg, #483D8B, #3A2D6B); /* 少し濃く */
+      background: linear-gradient(145deg, #483D8B, #3A2D6B);
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
       transform: translateY(-4px) scale(1.02);
     }
@@ -59,7 +57,7 @@
 
     .sakura-particle {
       position: absolute;
-      background-color: rgba(255, 192, 203, 0.85); /* 黒背景なので少し透明度を上げるか、色を明るくしても良い */
+      background-color: rgba(255, 192, 203, 0.85);
       border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
       animation: fall-sakura linear infinite;
       pointer-events: none;
@@ -69,7 +67,7 @@
     @keyframes fall-sakura {
       0% { transform: translateY(-10vh) translateX(var(--start-x)) rotate(0deg) scale(var(--scale)); opacity: 0; }
       10% { opacity: 1; }
-      95% { opacity: 0.7; } /* 黒背景なので少し長めに表示 */
+      95% { opacity: 0.7; }
       100% { transform: translateY(110vh) translateX(var(--end-x)) rotate(var(--rotate-end)) scale(var(--scale)); opacity: 0; }
     }
 
@@ -80,18 +78,53 @@
         animation: twinkle-fall linear infinite;
         pointer-events: none;
         z-index: 1;
-        box-shadow: 0 0 8px rgba(255, 255, 224, 0.9), 0 0 15px rgba(255, 255, 224, 0.7); /* 影を少し強調 */
+        box-shadow: 0 0 8px rgba(255, 255, 224, 0.9), 0 0 15px rgba(255, 255, 224, 0.7);
         opacity: 0;
     }
     @keyframes twinkle-fall {
         0% { transform: translateY(-15vh) translateX(var(--star-start-x)) scale(var(--star-scale)) rotate(0deg); opacity: 0; }
         15% { opacity: 1; }
-        85% { opacity: 0.8; } /* 黒背景なので少し長めに表示 */
+        85% { opacity: 0.8; }
         100% { transform: translateY(110vh) translateX(var(--star-end-x)) scale(calc(var(--star-scale) * 0.5)) rotate(720deg); opacity: 0; }
     }
+
+    /* ★★★ フローティングキャラクター用のコンテナスタイル ★★★ */
+    #floating-chars-container {
+      position: fixed; /* 画面全体を覆う */
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden; /* はみ出した画像は見えないように */
+      pointer-events: none; /* 下の要素をクリックできるように */
+      z-index: 5; /* パーティクルより手前、タイトル/ボタンより後ろ */
+    }
+
+    /* ★★★ フローティングキャラクター画像のスタイルとアニメーション ★★★ */
+    .floating-char-img {
+      position: absolute;
+      height: auto; /* 幅に合わせて高さを自動調整 */
+      opacity: 0; /* 初期状態は透明 */
+      animation-name: floatAndFade;
+      animation-timing-function: ease-in-out;
+      animation-fill-mode: forwards; /* アニメーション終了後、最後の状態を維持（消えたままにする） */
+      border-radius: 10px; /* 少し角を丸める */
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* 軽い影 */
+      transform-origin: center center;
+    }
+
+    @keyframes floatAndFade {
+      0% { opacity: 0; transform: translateY(30px) scale(0.7) rotate(-5deg); } /* 少し下から、小さく、傾いて出現開始 */
+      20% { opacity: 0.85; transform: translateY(0px) scale(1) rotate(0deg); }   /* 中央にフェードイン、元のサイズに戻る */
+      80% { opacity: 0.85; transform: translateY(-30px) scale(1.05) rotate(5deg); } /* 少し上に浮遊し、わずかに拡大、逆向きに傾く */
+      100% { opacity: 0; transform: translateY(-60px) scale(0.6) rotate(10deg); } /* さらに上に移動しながらフェードアウト、縮小 */
+    }
+
   </style>
 </head>
 <body>
+  <div id="floating-chars-container"></div>
+
   <h1 id="game-title">忍風桜</h1>
   <button class="start-button" onclick="goToCharacterSelect()">ゲーム開始</button>
 
@@ -150,6 +183,50 @@
         }
     }
 
+    // ★★★ フローティングキャラクター関連のJavaScript ★★★
+    const characterImages = ['shaoran_web.PNG', 'yuii_web.PNG', 'janome..PNG']; // 表示するキャラクター画像のリスト
+    const floatingCharsContainer = document.getElementById('floating-chars-container');
+
+    function showRandomFloatingCharacter() {
+        if (!floatingCharsContainer) return;
+
+        const imgIndex = Math.floor(Math.random() * characterImages.length);
+        const imgSrc = characterImages[imgIndex];
+
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = "Floating Character"; // 代替テキスト
+        img.className = 'floating-char-img';
+
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // 画像の幅をランダムに設定 (例: 100px から 180px)
+        const imageWidth = Math.random() * 80 + 100; 
+        img.style.width = `${imageWidth}px`;
+
+        // 位置をランダムに設定 (画面内に収まるように)
+        // 画像の高さは不明なので、幅に基づいて大まかに調整
+        const estimatedImageHeight = imageWidth * 1.2; // 仮に幅の1.2倍の高さと想定
+        img.style.left = `${Math.random() * (screenWidth - imageWidth)}px`;
+        img.style.top = `${Math.random() * (screenHeight - estimatedImageHeight * 1.2)}px`; // 上下にも余裕を持たせる
+
+        // アニメーションの長さをランダムに (例: 5秒から9秒)
+        img.style.animationDuration = `${Math.random() * 4 + 5}s`;
+        // アニメーションの開始タイミングを少し遅らせる (任意)
+        // img.style.animationDelay = `${Math.random() * 0.5}s`; 
+
+        floatingCharsContainer.appendChild(img);
+
+        // アニメーション終了後に要素を削除
+        img.addEventListener('animationend', () => {
+            if (img.parentNode) {
+                img.parentNode.removeChild(img);
+            }
+        }, { once: true }); // イベントリスナーを一度だけ実行する
+    }
+
+
     window.onload = function() {
       if (bgm) {
         bgm.volume = 0.5;
@@ -166,6 +243,10 @@
       }
       createSakuraParticles();
       createStarParticles();
+      
+      // ★★★ フローティングキャラクターの表示を開始 ★★★
+      showRandomFloatingCharacter(); // 最初に1つ表示
+      setInterval(showRandomFloatingCharacter, 2800); // 約2.8秒ごとに新しいキャラクターを表示 (お好みで調整)
     };
   </script>
 </body>
