@@ -13,7 +13,7 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #1c1c1c 0%, #3c3c3c 100%); /* 暗いチャコール系のグラデーション */
+      background: linear-gradient(135deg, #1c1c1c 0%, #3c3c3c 100%);
       font-family: 'Noto Sans JP', sans-serif;
       text-align: center;
       overflow: hidden;
@@ -88,36 +88,35 @@
         100% { transform: translateY(110vh) translateX(var(--star-end-x)) scale(calc(var(--star-scale) * 0.5)) rotate(720deg); opacity: 0; }
     }
 
-    /* ★★★ フローティングキャラクター用のコンテナスタイル ★★★ */
     #floating-chars-container {
-      position: fixed; /* 画面全体を覆う */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      overflow: hidden; /* はみ出した画像は見えないように */
-      pointer-events: none; /* 下の要素をクリックできるように */
-      z-index: 5; /* パーティクルより手前、タイトル/ボタンより後ろ */
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 5;
     }
 
-    /* ★★★ フローティングキャラクター画像のスタイルとアニメーション ★★★ */
     .floating-char-img {
       position: absolute;
-      height: auto; /* 幅に合わせて高さを自動調整 */
-      opacity: 0; /* 初期状態は透明 */
+      height: auto;
+      opacity: 0;
       animation-name: floatAndFade;
       animation-timing-function: ease-in-out;
-      animation-fill-mode: forwards; /* アニメーション終了後、最後の状態を維持（消えたままにする） */
-      border-radius: 10px; /* 少し角を丸める */
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* 軽い影 */
+      animation-fill-mode: forwards;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       transform-origin: center center;
     }
 
+    /* ★★★ フローティングキャラクターのアニメーションを調整 ★★★ */
     @keyframes floatAndFade {
-      0% { opacity: 0; transform: translateY(30px) scale(0.7) rotate(-5deg); } /* 少し下から、小さく、傾いて出現開始 */
-      20% { opacity: 0.85; transform: translateY(0px) scale(1) rotate(0deg); }   /* 中央にフェードイン、元のサイズに戻る */
-      80% { opacity: 0.85; transform: translateY(-30px) scale(1.05) rotate(5deg); } /* 少し上に浮遊し、わずかに拡大、逆向きに傾く */
-      100% { opacity: 0; transform: translateY(-60px) scale(0.6) rotate(10deg); } /* さらに上に移動しながらフェードアウト、縮小 */
+      0% { opacity: 0; transform: translateY(50px) scale(0.4) rotate(-15deg); } /* より小さく、下から出現 */
+      30% { opacity: 0.9; transform: translateY(0px) scale(1.0) rotate(5deg); }  /* 通常サイズに、少し回転 */
+      70% { opacity: 0.9; transform: translateY(-40px) scale(1.3) rotate(-5deg); }/* さらに大きく、上に浮遊、逆回転 */
+      100% { opacity: 0; transform: translateY(-70px) scale(1.2) rotate(15deg); } /* 大きいまま上に消えていくイメージ */
     }
 
   </style>
@@ -183,47 +182,70 @@
         }
     }
 
-    // ★★★ フローティングキャラクター関連のJavaScript ★★★
-    const characterImages = ['shaoran_web.PNG', 'yuii_web.PNG', 'janome..PNG']; // 表示するキャラクター画像のリスト
+    const characterImages = ['shaoran_web.PNG', 'yuii_web.PNG', 'janome.PNG'];
     const floatingCharsContainer = document.getElementById('floating-chars-container');
+    let currentlyDisplayedCharSrcs = new Set(); // ★★★ 表示中のキャラクターのsrcを管理 ★★★
+    const MAX_FLOATING_CHARS = 3; // ★★★ 同時表示されるキャラクターの最大数 ★★★
 
     function showRandomFloatingCharacter() {
-        if (!floatingCharsContainer) return;
+        if (!floatingCharsContainer || floatingCharsContainer.children.length >= MAX_FLOATING_CHARS) {
+            return; // 表示上限に達している場合は何もしない
+        }
 
-        const imgIndex = Math.floor(Math.random() * characterImages.length);
-        const imgSrc = characterImages[imgIndex];
+        // 表示中でないキャラクターのリストを作成
+        let availableImages = characterImages.filter(src => !currentlyDisplayedCharSrcs.has(src));
+
+        if (availableImages.length === 0) {
+            // もし表示できる新しいユニークなキャラがいない場合（全種類表示中、またはキャラクタ種類が少ない場合）
+            // かつ、まだ表示枠に空きがある場合は、重複を許容して表示するか、表示可能なものから選ぶ
+            // ここでは、表示枠に空きがあり、かつユニークなものが尽きた場合は、重複を許して表示する
+            // (ただし、characterImagesが3種未満の場合は、そもそもこの条件が複雑になるので、
+            //  シンプルに表示可能なものがない＝枠が埋まっている、と判断させる)
+            if (characterImages.length > 0 && floatingCharsContainer.children.length < MAX_FLOATING_CHARS) {
+                // 強制的に表示可能なものがない場合は、表示中のものを除いたものではなく、全リストから選ぶ（これにより重複の可能性）
+                // ただし、このロジックだと常に新しいキャラを求めるので、3種しかいない場合は3体出たら新しいのは出なくなる
+                // より良いのは、表示数が3未満なら、現在表示されていないものを優先し、なければ何もしない。
+                // もしキャラの種類が3種類より少ない場合は、常にその中から重複なく表示されるようにする。
+                 if (currentlyDisplayedCharSrcs.size >= characterImages.length) {
+                     // console.log("全ての種類のキャラクターが表示中です（または表示できるユニークなキャラがいません）");
+                     return; // 表示できる新しいユニークなキャラがいない場合は一旦待つ
+                 }
+                 // このケースは、availableImagesが0だが、currentlyDisplayedCharSrcs.size < characterImages.length の場合のみ、
+                 // もしくは characterImages.length < MAX_FLOATING_CHARS で、まだ空きがある場合。
+                 // 基本的には上の availableImages.length === 0 で return するので、ここに来るのは稀。
+            } else {
+                return;
+            }
+        }
+        
+        const imgSrc = availableImages[Math.floor(Math.random() * availableImages.length)];
 
         const img = document.createElement('img');
         img.src = imgSrc;
-        img.alt = "Floating Character"; // 代替テキスト
+        img.alt = "Floating Character";
         img.className = 'floating-char-img';
 
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        
-        // 画像の幅をランダムに設定 (例: 100px から 180px)
-        const imageWidth = Math.random() * 80 + 100; 
+        const imageWidth = Math.random() * 90 + 80; // 幅を80pxから170pxに調整
         img.style.width = `${imageWidth}px`;
-
-        // 位置をランダムに設定 (画面内に収まるように)
-        // 画像の高さは不明なので、幅に基づいて大まかに調整
-        const estimatedImageHeight = imageWidth * 1.2; // 仮に幅の1.2倍の高さと想定
+        
+        const estimatedImageHeight = imageWidth * 1.2;
         img.style.left = `${Math.random() * (screenWidth - imageWidth)}px`;
-        img.style.top = `${Math.random() * (screenHeight - estimatedImageHeight * 1.2)}px`; // 上下にも余裕を持たせる
+        // 表示位置を画面の上半分に集中させるなど、調整も可能
+        img.style.top = `${Math.random() * (screenHeight * 0.7 - estimatedImageHeight) + (screenHeight * 0.1)}px`; // 画面の上10%～70%あたりに
 
-        // アニメーションの長さをランダムに (例: 5秒から9秒)
-        img.style.animationDuration = `${Math.random() * 4 + 5}s`;
-        // アニメーションの開始タイミングを少し遅らせる (任意)
-        // img.style.animationDelay = `${Math.random() * 0.5}s`; 
+        img.style.animationDuration = `${Math.random() * 4 + 7}s`; // アニメーション時間を7秒～11秒に
 
         floatingCharsContainer.appendChild(img);
+        currentlyDisplayedCharSrcs.add(imgSrc); // 表示セットに追加
 
-        // アニメーション終了後に要素を削除
         img.addEventListener('animationend', () => {
             if (img.parentNode) {
                 img.parentNode.removeChild(img);
             }
-        }, { once: true }); // イベントリスナーを一度だけ実行する
+            currentlyDisplayedCharSrcs.delete(imgSrc); // 消えたらセットから削除
+        }, { once: true });
     }
 
 
@@ -244,9 +266,11 @@
       createSakuraParticles();
       createStarParticles();
       
-      // ★★★ フローティングキャラクターの表示を開始 ★★★
-      showRandomFloatingCharacter(); // 最初に1つ表示
-      setInterval(showRandomFloatingCharacter, 2800); // 約2.8秒ごとに新しいキャラクターを表示 (お好みで調整)
+      showRandomFloatingCharacter(); // 最初にいくつか表示
+      setTimeout(showRandomFloatingCharacter, 800);  // 少し遅れて2体目
+      setTimeout(showRandomFloatingCharacter, 1600); // さらに遅れて3体目 (初期表示用)
+
+      setInterval(showRandomFloatingCharacter, 3200); // 約3.2秒ごとに新しいキャラクターの表示を試みる
     };
   </script>
 </body>
