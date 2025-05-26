@@ -227,7 +227,7 @@
         // 画面の1/4程度の大きさの印象にするためのスケール値。
         // 画面幅の1/4 = screenWidth / 4。これを目指す。
         // targetWidth = baseImageWidth * targetScale  なので、 targetScale = targetWidth / baseImageWidth
-        const targetWidthForQuarterScreen = screenWidth / 4.5; // 少し控えめに1/4.5
+        const targetWidthForQuarterScreen = screenWidth / 6; // 少し控えめに1/4.5
         const targetScale = Math.min(targetWidthForQuarterScreen / baseImageWidth, 3.5); // 最大でも3.5倍まで
         img.style.setProperty('--target-scale', targetScale.toFixed(2));
 
