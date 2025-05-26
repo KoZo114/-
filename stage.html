@@ -7,77 +7,25 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-
-    body {
-      width: 100vw; height: 100vh; overflow: hidden;
-      font-family: 'Noto Sans JP', sans-serif;
-      touch-action: manipulation; -webkit-overflow-scrolling: touch;
-      margin: 0; /* bodyのデフォルトマージンをリセット */
-    }
-
-    #page-wrapper {
-      width: 100%; height: 100%;
-      background-color: #000; /* 外側は黒背景 */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative; /* 外側の桜パーティクルの基準 */
-      overflow: hidden;
-    }
-
+    body { width: 100vw; height: 100vh; overflow: hidden; font-family: 'Noto Sans JP', sans-serif; touch-action: manipulation; -webkit-overflow-scrolling: touch; margin: 0; }
+    #page-wrapper { width: 100%; height: 100%; background-color: #000; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; }
     #game-container {
-      position: relative;
-      width: 100%;
-      max-width: 380px; /* PCでの表示幅。お好みで調整 (例: 320px, 360px, 400px, 480px) */
-      height: 100%; /* page-wrapperに対して100% */
+      position: relative; width: 100%;
+      max-width: 400px; /* PCでの表示幅 (320px～480pxで調整) */
+      height: 100%;
       background: linear-gradient(135deg, #ffeef5 0%, #ffe8f0 25%, #f8e8ff 50%, #e8f0ff 75%, #f0f8ff 100%);
-      overflow: hidden; /* ゲーム内要素がはみ出ないように */
-      box-shadow: 0 0 20px rgba(255,192,203,0.5); /* ゲームエリアの境界を少し光らせる */
+      overflow: hidden;
+      /* background: rgba(0,100,0,0.1); */ /* ゲームエリア確認用、緑色の半透明背景 */
+      box-shadow: 0 0 20px rgba(255,192,203,0.5);
     }
-
-    .bg-particle { /* ゲームコンテナ内の背景パーティクル */
-      position: absolute;
-      background: rgba(255, 182, 193, 0.25);
-      border-radius: 50%;
-      pointer-events: none;
-      animation: float-bg linear infinite;
-      z-index: 1; /* ゲーム内アイテムより後ろ */
-    }
+    .bg-particle { position: absolute; background: rgba(255, 182, 193, 0.25); border-radius: 50%; pointer-events: none; animation: float-bg linear infinite; z-index: 1; }
     @keyframes float-bg { 0% { transform: translateY(100%) rotate(0deg); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
-
-    /* 外側に降る桜のパーティクル */
-    .outer-sakura-particle {
-        position: absolute; /* page-wrapper基準 */
-        background-image: url('petal.png'); /* 既存の花びら画像を使用。別の画像も可 */
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-color: transparent;
-        pointer-events: none;
-        animation: fall-outer-sakura linear infinite;
-        opacity: 0;
-        z-index: 5; /* game-containerより手前、UIより後ろ */
-    }
-    @keyframes fall-outer-sakura {
-        0% { transform: translateY(-10vh) translateX(var(--outer-start-x)) rotateZ(0deg) rotateY(var(--outer-rotate-y-start)); opacity: 0; }
-        10% { opacity: 0.6; } /* 少し薄めに */
-        90% { opacity: 0.6; }
-        100% { transform: translateY(110vh) translateX(var(--outer-end-x)) rotateZ(var(--outer-rotate-z-end)) rotateY(var(--outer-rotate-y-end)); opacity: 0; }
-    }
-
-
-    #character {
-      position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
-      max-height: 25vh; max-width: 120px; height: auto;
-      z-index: 50; filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
-    }
+    .outer-sakura-particle { position: absolute; background-image: url('petal.png'); background-size: contain; background-repeat: no-repeat; background-color: transparent; width: 20px; height: 20px; pointer-events: none; animation: fall-outer-sakura linear infinite; opacity: 0; z-index: 5; }
+    @keyframes fall-outer-sakura { 0% { transform: translateY(-10vh) translateX(var(--outer-start-x)) rotateZ(0deg) rotateY(var(--outer-rotate-y-start)); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(110vh) translateX(var(--outer-end-x)) rotateZ(var(--outer-rotate-z-end)) rotateY(var(--outer-rotate-y-end)); opacity: 0; } }
+    #character { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); max-height: 25vh; max-width: 120px; height: auto; z-index: 50; filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2)); }
     #character.jump { animation: jump 0.6s ease; }
-    #character.powerup {
-      filter: drop-shadow(0 0 15px #FFD700) drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
-      transform: translateX(-50%) scale(1.1);
-      transition: transform 0.2s ease-out, filter 0.2s ease-out;
-    }
+    #character.powerup { filter: drop-shadow(0 0 15px #FFD700) drop-shadow(2px 4px 8px rgba(0,0,0,0.2)); transform: translateX(-50%) scale(1.1); transition: transform 0.2s ease-out, filter 0.2s ease-out; }
     @keyframes jump { 0% { transform: translateX(-50%) translateY(0); } 30% { transform: translateX(-50%) translateY(-60px); } 60% { transform: translateX(-50%) translateY(-60px); } 100% { transform: translateX(-50%) translateY(0); } }
-
     .petal, .bomb, .power-up, .time-plus { position: absolute; pointer-events: none; z-index: 40; }
     .petal { width: 35px; height: 35px; background-image: url('petal.png'); background-color: transparent; background-repeat: no-repeat; background-position: center; background-size: contain; animation: fall linear; filter: drop-shadow(0 0 2px rgba(220, 20, 60, 0.3)); }
     .petal.special { width: 40px; height: 40px; background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, #FF69B4 100%); filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8)); animation: fall-special linear; border-radius:50%; }
@@ -99,21 +47,12 @@
     @keyframes fall-powerup { 0% { transform: translateY(-50px) scale(0.8); opacity: 0.8; } 25% { opacity: 1; transform: translateY(25vh) scale(1.1); } 50% { transform: translateY(50vh) scale(1.2); } 75% { transform: translateY(75vh) scale(1.1); } 100% { transform: translateY(100vh) scale(1); opacity: 1; } }
     @keyframes fall-time-plus { 0% { transform: translateY(-50px) translateX(0px) rotate(0deg) scale(0.9); opacity: 0.7;} 25% { opacity: 1; transform: translateY(25vh) translateX(10px) rotate(5deg) scale(1);} 50% { transform: translateY(50vh) translateX(-10px) rotate(-5deg) scale(1.1);} 75% { transform: translateY(75vh) translateX(5px) rotate(2deg) scale(1);} 100% { transform: translateY(100vh) translateX(0px) rotate(0deg) scale(0.9); opacity: 1;} }
 
-    #scoreboard, #level-display, .control-btn, .power-effect, .combo-display, .level-up-effect {
-        position: fixed; z-index: 200;
-    }
+    #scoreboard, #level-display, .control-btn, .power-effect, .combo-display, .level-up-effect { position: fixed; z-index: 200; }
     #scoreboard { top: 15px; right: 20px; font-size: 14px; font-weight: bold; color: #5a3d5c; background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 240, 250, 0.9) 100%); padding: 15px 20px; border-radius: 20px; line-height: 1.6; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(255, 105, 180, 0.2); border: 2px solid rgba(255, 182, 193, 0.4); backdrop-filter: blur(10px); min-width: 180px; }
     #level-display { top: 15px; left: 20px; font-size: 16px; font-weight: bold; color: #5a3d5c; background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.9) 100%); padding: 12px 18px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(65, 105, 225, 0.2); border: 2px solid rgba(100, 149, 237, 0.3); backdrop-filter: blur(5px); }
     .combo-display { top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold; color: #FFD700; background: rgba(0, 0, 0, 0.8); padding: 10px 20px; border-radius: 15px; display: none; animation: combo-pop 1s ease-out; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); z-index: 210; }
     @keyframes combo-pop { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-
-    #gameover { /* game-container の中央に配置 */
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 28px; font-weight: bold; background: linear-gradient(145deg, rgba(0,0,0,0.9), rgba(50,50,50,0.8));
-      color: white; padding: 30px; border-radius: 20px; display: none; z-index: 150; text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border: 2px solid rgba(255, 255, 255, 0.2);
-      width: 90%; max-width: 380px;
-    }
+    #gameover { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: bold; background: linear-gradient(145deg, rgba(0,0,0,0.9), rgba(50,50,50,0.8)); color: white; padding: 30px; border-radius: 20px; display: none; z-index: 150; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border: 2px solid rgba(255, 255, 255, 0.2); width: 90%; max-width: 380px; }
     #return-to-select-btn { background-color: #f08080; color: white; border: none; padding: 12px 25px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 25px; cursor: pointer; border-radius: 8px; transition: background-color 0.3s ease; }
     #return-to-select-btn:hover { background-color: #cd5c5c; }
     .control-btn { bottom: 15px; width: 55px; height: 55px; font-size: 22px; border-radius: 50%; border: none; background: linear-gradient(145deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 105, 180, 0.8) 100%); color: white; touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4), 0 3px 6px rgba(0, 0, 0, 0.2); border: 2px solid rgba(255, 255, 255, 0.4); transition: all 0.2s ease; }
@@ -140,7 +79,8 @@
       </div>
       <div class="combo-display" id="combo-display"></div>
       <div class="level-up-effect" id="level-up-effect"></div>
-      <div class="power-effect" id="power-effect"></div> </div>
+      <div class="power-effect" id="power-effect"></div>
+    </div>
   </div>
 
   <div id="scoreboard"> スコア: <span id="score">0</span><br> ハイスコア: <span id="highscore">0</span><br> 残り: <span id="timer">60</span>秒<br> コンボ: <span id="combo">0</span> </div>
@@ -151,7 +91,7 @@
     document.addEventListener('selectstart', e => { e.preventDefault(); return false; }, { passive: false });
     document.addEventListener('dragstart', e => { e.preventDefault(); return false; }, { passive: false });
 
-    const pageWrapper = document.getElementById("page-wrapper");
+    const pageWrapper = document.getElementById("page-wrapper"); // ★★★ 取得 ★★★
     const gameContainer = document.getElementById("game-container");
     const character = document.getElementById("character");
     const scoreDisplay = document.getElementById("score");
@@ -199,28 +139,28 @@
     catch (error) { console.warn("ハイスコア読み込み失敗:", error); }
     highscoreDisplay.innerText = highscore;
 
-    function createBackgroundParticle() {
-      if (!gameContainer) return; // gameContainer がなければ何もしない
+    function createBackgroundParticle() { // ゲームコンテナ内
+      if (!gameContainer) return;
       const particle = document.createElement("div"); particle.className = "bg-particle";
       particle.style.left = Math.random() * gameContainer.offsetWidth + "px";
-      particle.style.width = particle.style.height = (Math.random() * 6 + 3) + "px"; // 少し小さめに
-      particle.style.animationDuration = (Math.random() * 12 + 10) + "s"; // 少しゆっくりに
+      particle.style.width = particle.style.height = (Math.random() * 6 + 3) + "px";
+      particle.style.animationDuration = (Math.random() * 12 + 10) + "s";
       gameContainer.appendChild(particle);
       setTimeout(() => { if (particle.parentNode) particle.remove(); }, 22000);
     }
 
-    function createOuterSakuraParticle() {
+    function createOuterSakuraParticle() { // page-wrapper 全体
         if(!pageWrapper) return;
         const particle = document.createElement('div');
         particle.className = 'outer-sakura-particle';
-        const size = Math.random() * 25 + 10; // 10px - 35px
+        const size = Math.random() * 25 + 10;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
 
         const startXOuter = `${Math.random() * 100}vw`;
-        const endXOuterVariance = (Math.random() - 0.5) * 40; // -20vw から +20vw
-        const rotateYStart = `${(Math.random() - 0.5) * 60}deg`; // Y軸回転の初期値
-        const rotateYEnd = `${(Math.random() - 0.5) * 120 + parseFloat(rotateYStart.replace('deg',''))}deg`; // Y軸回転の最終値
+        const endXOuterVariance = (Math.random() - 0.5) * 30;
+        const rotateYStart = `${(Math.random() - 0.5) * 60}deg`;
+        const rotateYEnd = `${(Math.random() - 0.5) * 120 + parseFloat(rotateYStart.replace('deg',''))}deg`;
         const rotateZEnd = `${Math.random() * 720 + 360}deg`;
 
         particle.style.setProperty('--outer-start-x', startXOuter);
@@ -229,14 +169,14 @@
         particle.style.setProperty('--outer-rotate-y-end', rotateYEnd);
         particle.style.setProperty('--outer-rotate-z-end', rotateZEnd);
 
-        particle.style.animationDuration = `${Math.random() * 10 + 10}s`; // 10秒から20秒
+        particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
         particle.style.animationDelay = `${Math.random() * 12}s`;
         pageWrapper.appendChild(particle);
 
         const totalAnimationTime = (parseFloat(particle.style.animationDuration.replace('s','')) + parseFloat(particle.style.animationDelay.replace('s',''))) * 1000;
         setTimeout(() => {
             if (particle.parentNode) particle.remove();
-        }, totalAnimationTime + 1000); // アニメーション終了より少し後に削除
+        }, totalAnimationTime + 1000);
     }
 
     function updateCharacterPosition() { character.style.left = `${characterX}px`; }
@@ -249,7 +189,7 @@
     }
     function getSpawnRate() { return Math.max(150, 700 - (level * 40)); }
 
-    let lastCreatedItemTypeForSound = null; // 効果音判別用
+    let lastCollectedItemType = null; // ★★★ 衝突したアイテムのタイプを保持する変数 ★★★
 
     function updateScore(points = 1) {
       const previousLevel = level;
@@ -264,14 +204,13 @@
       if (combo > 1) showComboPopup();
       if (combo > maxCombo) maxCombo = combo;
 
-      // 花びら系アイテム(通常、特殊、ゴールデン)の音 - lastCreatedItemTypeForSound を参照
-      if (points > 0 && (lastCreatedItemTypeForSound === "normal" || lastCreatedItemTypeForSound === "special" || lastCreatedItemTypeForSound === "golden")) {
-          if (se && typeof se.play === 'function') {
-              se.currentTime = 0;
-              se.play().catch(err => console.warn("kirarin.mp3 再生エラー:", err));
-          }
-      }
-      if (points >= 5 && lastCreatedItemTypeForSound === "golden") showSpecialEffect(); // ゴールデン専用の視覚エフェクト
+      // ★★★ item.dataset.type を使って音を鳴らすのは checkCollision 内で行う ★★★
+      // ★★★ ここでは汎用的なスコア加算エフェクトのみ（もしあれば） ★★★
+      // if (se && typeof se.play === 'function' && points > 0) { // points > 0 の時だけ鳴らすなど
+      //    se.currentTime = 0;
+      //    se.play().catch(err => console.warn("kirarin.mp3 再生エラー:", err));
+      // }
+      if (points >= 5 && lastCollectedItemType === "golden") showSpecialEffect();
     }
 
     function resetCombo() { combo = 0; comboDisplay.innerText = combo; }
@@ -286,21 +225,21 @@
       if (timeLeft <= 0 || !gameContainer) return;
       const item = document.createElement("div");
       const rand = Math.random();
-      lastCreatedItemTypeForSound = "normal"; // デフォルトで設定
+      let itemTypeForCreation = "normal"; // この関数内でのみ使用するタイプ変数
 
       let probBomb = 0; if (level >= 2) { probBomb = Math.min(0.05 + (level - 2) * 0.03, 0.14); }
       const probTimePlus = 0.08; let probPowerUp = 0; if (level >= 2) { probPowerUp = 0.07; }
       const probGolden = 0.15; const probSpecial = 0.20; let cumulativeProb = 0;
 
-      cumulativeProb += probBomb; if (rand < cumulativeProb && level >= 2) { lastCreatedItemTypeForSound = "bomb"; }
-      else { cumulativeProb += probTimePlus; if (rand < cumulativeProb) { lastCreatedItemTypeForSound = "timePlus"; }
-      else { cumulativeProb += probPowerUp; if (rand < cumulativeProb && level >= 2) { lastCreatedItemTypeForSound = "powerup"; }
-      else { cumulativeProb += probGolden; if (rand < cumulativeProb) { lastCreatedItemTypeForSound = "golden"; }
-      else { cumulativeProb += probSpecial; if (rand < cumulativeProb) { lastCreatedItemTypeForSound = "special"; }
-      else { lastCreatedItemTypeForSound = "normal"; }}}}}
+      cumulativeProb += probBomb; if (rand < cumulativeProb && level >= 2) { itemTypeForCreation = "bomb"; }
+      else { cumulativeProb += probTimePlus; if (rand < cumulativeProb) { itemTypeForCreation = "timePlus"; }
+      else { cumulativeProb += probPowerUp; if (rand < cumulativeProb && level >= 2) { itemTypeForCreation = "powerup"; }
+      else { cumulativeProb += probGolden; if (rand < cumulativeProb) { itemTypeForCreation = "golden"; }
+      else { cumulativeProb += probSpecial; if (rand < cumulativeProb) { itemTypeForCreation = "special"; }
+      else { itemTypeForCreation = "normal"; }}}}}
 
       let itemWidth;
-      switch(lastCreatedItemTypeForSound) {
+      switch(itemTypeForCreation) {
         case "bomb": item.className = "bomb"; item.dataset.type = "bomb"; item.dataset.points = "-10"; itemWidth = 40; break;
         case "timePlus": item.className = "time-plus"; item.dataset.type = "timePlus"; itemWidth = 40; break;
         case "powerup": item.className = "power-up"; item.dataset.type = "powerup"; item.dataset.points = "0"; itemWidth = 45; break;
@@ -317,27 +256,46 @@
       const checkCollision = setInterval(() => {
         if (!item.parentNode || timeLeft <= 0) { clearInterval(checkCollision); if(item.parentNode) item.remove(); return; }
         const rect1 = item.getBoundingClientRect(); const rect2 = character.getBoundingClientRect();
-        if ( rect1.top < rect2.bottom && rect1.bottom > rect2.top && rect1.left < rect2.right && rect1.right > rect2.left ) {
-          const currentItemType = item.dataset.type;
-          const points = parseInt(item.dataset.points) || 0;
 
-          if (currentItemType === "bomb") {
+        // console.log("Checking:", item.dataset.type, {itemL: rect1.left, itemR: rect1.right, itemT: rect1.top, itemB: rect1.bottom}, {charL: rect2.left, charR: rect2.right, charT: rect2.top, charB: rect2.bottom});
+
+        if ( rect1.top < rect2.bottom && rect1.bottom > rect2.top && rect1.left < rect2.right && rect1.right > rect2.left ) {
+          const collectedItemType = item.dataset.type; // 衝突したアイテムのタイプ
+          const points = parseInt(item.dataset.points) || 0;
+          lastCollectedItemType = collectedItemType; // ★★★ 収集されたアイテムのタイプを記録 ★★★
+
+          let shouldRemoveItem = true; // 基本的にアイテムは消す
+
+          if (collectedItemType === "bomb") {
             score = Math.max(0, score + points); scoreDisplay.innerText = score; resetCombo();
             if (seBomb && typeof seBomb.play === 'function') { seBomb.currentTime = 0; seBomb.play().catch(err => console.warn("bom.mp3 再生エラー:", err));}
             gameContainer.style.background = '#ff8989'; setTimeout(() => { gameContainer.style.background = 'linear-gradient(135deg, #ffeef5 0%, #ffe8f0 25%, #f8e8ff 50%, #e8f0ff 75%, #f0f8ff 100%)'; }, 150);
-          } else if (currentItemType === "timePlus") {
+          } else if (collectedItemType === "timePlus") {
             timeLeft = Math.min(timeLeft + 5, MAX_TIME_LEFT); timerDisplay.innerText = timeLeft;
             if (seTimePlus && typeof seTimePlus.play === 'function') { seTimePlus.currentTime = 0; seTimePlus.play().catch(err => console.warn("tm.mp3 再生エラー:", err));}
-          } else if (currentItemType === "powerup") {
+          } else if (collectedItemType === "powerup") {
             if (sePowerUp && typeof sePowerUp.play === 'function') { sePowerUp.currentTime = 0; sePowerUp.play().catch(err => console.warn("st.mp3 再生エラー:", err));}
             activatePowerUp();
-          } else { // normal, special, golden - updateScore内で音再生
-            updateScore(points);
+          } else { // normal, special, golden
+            updateScore(points); // updateScore内で適切な音が鳴る (lastCollectedItemType を使う)
           }
-          item.remove(); clearInterval(checkCollision);
+
+          if(shouldRemoveItem){ // ★★★ アイテム削除とインターバルクリアをここで行う ★★★
+              item.remove();
+              clearInterval(checkCollision);
+          }
         }
-      }, 30); // 判定頻度を少し上げる (30ms = 約33fps)
-      setTimeout(() => { if (item.parentNode) { item.remove(); if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup" && item.dataset.type !== "timePlus") { resetCombo(); } } clearInterval(checkCollision); }, animationDuration * 1000 + 200);
+      }, 30);
+      setTimeout(() => {
+        if (item.parentNode) { // 画面外に出てもまだ存在していれば
+            if (item.dataset.type !== "bomb" && item.dataset.type !== "powerup" && item.dataset.type !== "timePlus") {
+                 // 花びら系を見逃した場合のみコンボリセット
+                resetCombo();
+            }
+            item.remove();
+        }
+        clearInterval(checkCollision); // 必ずクリア
+    }, animationDuration * 1000 + 300); // 少し長めに +300ms
     }
 
     let gameTimerId = null;
@@ -347,7 +305,7 @@
       if (bgm && typeof bgm.play === 'function' && bgm.paused) { bgm.play().catch(err => console.warn("BGM再生に失敗:", err)); }
       itemSpawnerId = setInterval(createItem, getSpawnRate());
       gameBgParticleInterval = setInterval(createBackgroundParticle, 600);
-      outerSakuraInterval = setInterval(createOuterSakuraParticle, 400); // 外側の桜の生成頻度
+      outerSakuraInterval = setInterval(createOuterSakuraParticle, 400);
 
       gameTimerId = setInterval(() => {
         if (timeLeft <= 0) {
@@ -366,7 +324,6 @@
       if (bgm && typeof bgm.pause === 'function') bgm.pause();
       finalScore.innerText = score; finalLevel.innerText = level; gameover.style.display = "block";
       if (score > highscore) { highscore = score; try { localStorage.setItem("sakuraGameHighscoreV3", highscore); highscoreDisplay.innerText = highscore; } catch (error) { } }
-      // gameContainer 内のアイテムとゲーム内パーティクルを削除
       Array.from(gameContainer.children).forEach(child => {
         if (child.id !== 'character' && child.id !== 'gameover' && !child.classList.contains('combo-display') && !child.classList.contains('level-up-effect') && !child.classList.contains('power-effect') ) {
             if (child.classList.contains('petal') || child.classList.contains('bomb') || child.classList.contains('power-up') || child.classList.contains('time-plus') || child.classList.contains('bg-particle')) {
@@ -374,8 +331,7 @@
             }
         }
       });
-      // pageWrapper 内の外側パーティクルを削除
-      pageWrapper.querySelectorAll('.outer-sakura-particle').forEach(el => el.remove());
+      if(pageWrapper) pageWrapper.querySelectorAll('.outer-sakura-particle').forEach(el => el.remove());
       if (returnToSelectBtn) { returnToSelectBtn.addEventListener("click", () => { window.location.href = "index.html"; }); }
     }
 
@@ -395,7 +351,7 @@
 
     const leftBtn = document.createElement("button"); leftBtn.innerText = "◀"; leftBtn.className = "control-btn"; leftBtn.style.left = "20px";
     const rightBtn = document.createElement("button"); rightBtn.innerText = "▶"; rightBtn.className = "control-btn"; rightBtn.style.right = "20px";
-    pageWrapper.appendChild(leftBtn); pageWrapper.appendChild(rightBtn); // page-wrapper に追加して game-container と重ならないように
+    pageWrapper.appendChild(leftBtn); pageWrapper.appendChild(rightBtn); // page-wrapperに追加
 
     let moveInterval = null;
     function startMove(direction) {
@@ -411,20 +367,22 @@
 
     leftBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startMove("left"); }, { passive: false });
     rightBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startMove("right"); }, { passive: false });
-    document.addEventListener("touchend", (e) => { if (moveInterval) stopMove(); }, { passive: false }); // documentでOK
+    document.addEventListener("touchend", (e) => { if (moveInterval) stopMove(); }, { passive: false });
     leftBtn.addEventListener("mousedown", () => startMove("left"));
     rightBtn.addEventListener("mousedown", () => startMove("right"));
-    document.addEventListener("mouseup", stopMove); // documentでOK
+    document.addEventListener("mouseup", stopMove);
 
     let touchStartX = null; let touchStartY = null; const swipeThreshold = 30;
     function getTouchXInGameContainer(clientX) { const gameContainerRect = gameContainer.getBoundingClientRect(); return clientX - gameContainerRect.left; }
-    gameContainer.addEventListener("touchstart", (e) => { // ★★★ スワイプのリスナーを gameContainer に変更 ★★★
-      if (timeLeft <= 0 || e.target.classList.contains('control-btn')) return; // コントロールボタン上なら何もしない
+    gameContainer.addEventListener("touchstart", (e) => {
+      if (timeLeft <= 0 || e.target.classList.contains('control-btn')) return;
       const touch = e.changedTouches[0];
-      touchStartX = getTouchXInGameContainer(touch.clientX);
-      touchStartY = touch.clientY; // Yはビューポート基準でOK
+      const gameContainerRect = gameContainer.getBoundingClientRect();
+      if (touch.clientX >= gameContainerRect.left && touch.clientX <= gameContainerRect.right && touch.clientY >= gameContainerRect.top && touch.clientY <= gameContainerRect.bottom) {
+          touchStartX = getTouchXInGameContainer(touch.clientX); touchStartY = touch.clientY;
+      } else { touchStartX = null; touchStartY = null; }
     }, { passive: true });
-    gameContainer.addEventListener("touchmove", (e) => { // ★★★ スワイプのリスナーを gameContainer に変更 ★★★
+    gameContainer.addEventListener("touchmove", (e) => {
       if (timeLeft <= 0 || touchStartX === null || e.target.classList.contains('control-btn')) return;
       let currentRelativeX = getTouchXInGameContainer(e.changedTouches[0].clientX);
       let deltaX = currentRelativeX - touchStartX;
@@ -434,7 +392,7 @@
       updateCharacterPosition();
       touchStartX = currentRelativeX;
     }, { passive: true });
-    gameContainer.addEventListener("touchend", (e) => { // ★★★ スワイプのリスナーを gameContainer に変更 ★★★
+    gameContainer.addEventListener("touchend", (e) => {
       if (timeLeft <= 0 || touchStartX === null || touchStartY === null || e.target.classList.contains('control-btn')) { touchStartX = null; touchStartY = null; return; }
       const finalTouchX = getTouchXInGameContainer(e.changedTouches[0].clientX);
       const deltaX = finalTouchX - touchStartX;
@@ -446,6 +404,7 @@
     window.addEventListener('resize', () => {
       const charWidth = character.offsetWidth || 120;
       characterX = Math.max(charWidth / 2, Math.min(gameContainer.offsetWidth - (charWidth / 2), characterX));
+      // characterX = gameContainer.offsetWidth / 2; // リサイズ時は中央に戻す場合
       updateCharacterPosition();
     });
 
