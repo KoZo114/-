@@ -101,7 +101,7 @@
 
     .floating-char-img {
       position: absolute;
-      height: auto;
+      height: auto; /* 幅に応じて高さを自動調整 */
       opacity: 0;
       animation-name: floatAndFade;
       animation-timing-function: ease-in-out;
@@ -113,10 +113,10 @@
 
     /* ★★★ フローティングキャラクターのアニメーションを調整 ★★★ */
     @keyframes floatAndFade {
-      0% { opacity: 0; transform: translateY(50px) scale(0.4) rotate(-15deg); } /* より小さく、下から出現 */
-      30% { opacity: 0.9; transform: translateY(0px) scale(1.0) rotate(5deg); }  /* 通常サイズに、少し回転 */
-      70% { opacity: 0.9; transform: translateY(-40px) scale(1.3) rotate(-5deg); }/* さらに大きく、上に浮遊、逆回転 */
-      100% { opacity: 0; transform: translateY(-70px) scale(1.2) rotate(15deg); } /* 大きいまま上に消えていくイメージ */
+      0% { opacity: 0; transform: translateY(60px) scale(0.3) rotate(-20deg); } /* より小さく、より下から出現 */
+      25% { opacity: 0.9; transform: translateY(0px) scale(1.0) rotate(5deg); }  /* 通常サイズに戻る */
+      75% { opacity: 0.9; transform: translateY(-50px) scale(var(--target-scale)) rotate(-10deg); }/* ★目標の大きさに★、上に浮遊 */
+      100% { opacity: 0; transform: translateY(-100px) scale(var(--target-scale)) rotate(20deg); } /* ★大きいまま★上に消えていく */
     }
 
   </style>
@@ -182,42 +182,34 @@
         }
     }
 
-    const characterImages = ['shaoran_web.PNG', 'yuii_web.PNG', 'janome..PNG'];
+    const characterImageFiles = ['shaoran_web.PNG', 'yuii_web.PNG', 'janome.PNG']; // 画像ファイル名リスト
     const floatingCharsContainer = document.getElementById('floating-chars-container');
-    let currentlyDisplayedCharSrcs = new Set(); // ★★★ 表示中のキャラクターのsrcを管理 ★★★
-    const MAX_FLOATING_CHARS = 3; // ★★★ 同時表示されるキャラクターの最大数 ★★★
+    let currentlyDisplayedCharSources = new Set(); // 表示中のキャラクターのsrcを管理
+    const MAX_FLOATING_CHARS = 3; // 同時表示最大数
 
     function showRandomFloatingCharacter() {
         if (!floatingCharsContainer || floatingCharsContainer.children.length >= MAX_FLOATING_CHARS) {
-            return; // 表示上限に達している場合は何もしない
+            return; // 表示上限またはコンテナがない場合は何もしない
         }
 
         // 表示中でないキャラクターのリストを作成
-        let availableImages = characterImages.filter(src => !currentlyDisplayedCharSrcs.has(src));
+        let availableImages = characterImageFiles.filter(src => !currentlyDisplayedCharSources.has(src));
 
         if (availableImages.length === 0) {
-            // もし表示できる新しいユニークなキャラがいない場合（全種類表示中、またはキャラクタ種類が少ない場合）
-            // かつ、まだ表示枠に空きがある場合は、重複を許容して表示するか、表示可能なものから選ぶ
-            // ここでは、表示枠に空きがあり、かつユニークなものが尽きた場合は、重複を許して表示する
-            // (ただし、characterImagesが3種未満の場合は、そもそもこの条件が複雑になるので、
-            //  シンプルに表示可能なものがない＝枠が埋まっている、と判断させる)
-            if (characterImages.length > 0 && floatingCharsContainer.children.length < MAX_FLOATING_CHARS) {
-                // 強制的に表示可能なものがない場合は、表示中のものを除いたものではなく、全リストから選ぶ（これにより重複の可能性）
-                // ただし、このロジックだと常に新しいキャラを求めるので、3種しかいない場合は3体出たら新しいのは出なくなる
-                // より良いのは、表示数が3未満なら、現在表示されていないものを優先し、なければ何もしない。
-                // もしキャラの種類が3種類より少ない場合は、常にその中から重複なく表示されるようにする。
-                 if (currentlyDisplayedCharSrcs.size >= characterImages.length) {
-                     // console.log("全ての種類のキャラクターが表示中です（または表示できるユニークなキャラがいません）");
-                     return; // 表示できる新しいユニークなキャラがいない場合は一旦待つ
-                 }
-                 // このケースは、availableImagesが0だが、currentlyDisplayedCharSrcs.size < characterImages.length の場合のみ、
-                 // もしくは characterImages.length < MAX_FLOATING_CHARS で、まだ空きがある場合。
-                 // 基本的には上の availableImages.length === 0 で return するので、ここに来るのは稀。
-            } else {
-                return;
-            }
+            // 表示できる新しいユニークなキャラがいない (全種類表示中か、キャラ種類が少ない場合)
+            // かつ、まだ表示枠に空きがある場合は、重複を許容せず、出せるものがなければ待つ
+             if (currentlyDisplayedCharSources.size >= characterImageFiles.length || characterImageFiles.length < MAX_FLOATING_CHARS ) {
+                 // console.log("表示できる新しいユニークなキャラがいないか、全種類表示済みで枠が埋まっています。");
+                 return;
+             }
+             // 上記の条件でなければ、基本的にはこのブロックには到達しにくいが、念のため。
+             // availableImagesが0だが、まだ表示枠があり、かつ全種類表示済みではない場合（＝バグの可能性）は、
+             // 一旦全リストからランダムに選ぶ（重複の可能性あり）ことを検討できるが、
+             // 今回は「被らずに」を優先するため、availableImagesが空なら基本的には何もしない。
         }
         
+        if (availableImages.length === 0) return; // 最終的に表示できるユニークなものがなければ何もしない
+
         const imgSrc = availableImages[Math.floor(Math.random() * availableImages.length)];
 
         const img = document.createElement('img');
@@ -227,27 +219,35 @@
 
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        const imageWidth = Math.random() * 90 + 80; // 幅を80pxから170pxに調整
-        img.style.width = `${imageWidth}px`;
         
-        const estimatedImageHeight = imageWidth * 1.2;
-        img.style.left = `${Math.random() * (screenWidth - imageWidth)}px`;
-        // 表示位置を画面の上半分に集中させるなど、調整も可能
-        img.style.top = `${Math.random() * (screenHeight * 0.7 - estimatedImageHeight) + (screenHeight * 0.1)}px`; // 画面の上10%～70%あたりに
+        // ★★★ 画像の基本の幅と、目標のスケール値を設定 ★★★
+        const baseImageWidth = Math.random() * 60 + 80; // 基本幅を80pxから140pxに
+        img.style.width = `${baseImageWidth}px`;
+        
+        // 画面の1/4程度の大きさの印象にするためのスケール値。
+        // 画面幅の1/4 = screenWidth / 4。これを目指す。
+        // targetWidth = baseImageWidth * targetScale  なので、 targetScale = targetWidth / baseImageWidth
+        const targetWidthForQuarterScreen = screenWidth / 4.5; // 少し控えめに1/4.5
+        const targetScale = Math.min(targetWidthForQuarterScreen / baseImageWidth, 3.5); // 最大でも3.5倍まで
+        img.style.setProperty('--target-scale', targetScale.toFixed(2));
 
-        img.style.animationDuration = `${Math.random() * 4 + 7}s`; // アニメーション時間を7秒～11秒に
+
+        const estimatedImageHeight = baseImageWidth * 1.2 * targetScale; // 最大時の高さを大まかに見積もる
+        img.style.left = `${Math.random() * (screenWidth - baseImageWidth * targetScale * 0.8 )}px`; // 最大幅を考慮
+        img.style.top = `${Math.random() * (screenHeight - estimatedImageHeight * 0.8)}px`;    // 最大高さを考慮
+
+        img.style.animationDuration = `${Math.random() * 4 + 8}s`; // アニメーション時間を8秒～12秒に少し長めに
 
         floatingCharsContainer.appendChild(img);
-        currentlyDisplayedCharSrcs.add(imgSrc); // 表示セットに追加
+        currentlyDisplayedCharSources.add(imgSrc);
 
         img.addEventListener('animationend', () => {
             if (img.parentNode) {
                 img.parentNode.removeChild(img);
             }
-            currentlyDisplayedCharSrcs.delete(imgSrc); // 消えたらセットから削除
+            currentlyDisplayedCharSources.delete(imgSrc);
         }, { once: true });
     }
-
 
     window.onload = function() {
       if (bgm) {
@@ -266,11 +266,11 @@
       createSakuraParticles();
       createStarParticles();
       
-      showRandomFloatingCharacter(); // 最初にいくつか表示
-      setTimeout(showRandomFloatingCharacter, 800);  // 少し遅れて2体目
-      setTimeout(showRandomFloatingCharacter, 1600); // さらに遅れて3体目 (初期表示用)
-
-      setInterval(showRandomFloatingCharacter, 3200); // 約3.2秒ごとに新しいキャラクターの表示を試みる
+      // 最初にいくつか時間差で表示
+      for (let i = 0; i < MAX_FLOATING_CHARS; i++) {
+          setTimeout(showRandomFloatingCharacter, i * 1000); // 1秒ずつずらして初期表示
+      }
+      setInterval(showRandomFloatingCharacter, 3000); // 約3秒ごとに新しいキャラクターの表示を試みる
     };
   </script>
 </body>
