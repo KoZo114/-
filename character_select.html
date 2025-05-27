@@ -4,17 +4,94 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>キャラ選択画面</title>
+  <!-- Google Fontsでゴシック体（ゲーム風） -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; font-family: sans-serif; background-color: #f5f5f5; text-align: center; }
-    h1 { margin-top: 20px; }
-    .container { display: flex; flex-direction: row; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; }
-    .character { border: 2px solid #ccc; border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; }
-    .character:hover { transform: scale(1.05); }
-    .character img { width: 200px; height: auto; display: block; }
-    .name { font-weight: bold; padding: 10px; background: #fff; }
+    body {
+      margin: 0; 
+      font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+      background: #191e2b;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    h1 {
+      margin-top: 32px;
+      color: #fff;
+      font-size: 2.8rem;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+      text-shadow: 2px 4px 10px #19faff, 0 1px 10px #fff, 0 0 32px #0ff;
+      font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+      z-index: 1;
+      position: relative;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding: 36px 10px 20px 10px;
+      z-index: 1;
+      position: relative;
+    }
+    .character {
+      border: 3px solid #00ffd0;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 
+        transform 0.35s cubic-bezier(.18,.89,.32,1.28), 
+        box-shadow 0.3s;
+      background: rgba(30, 30, 48, 0.82);
+      box-shadow: 0 4px 24px 0 #00ffd044, 0 1.5px 12px 0 #2228;
+      position: relative;
+    }
+    .character:hover {
+      transform: scale(1.09) translateY(-8px) rotate(-1deg);
+      box-shadow: 0 0 32px 12px #19faffbb, 0 4px 32px 0 #fff3;
+      border-color: #19faff;
+      z-index: 2;
+      animation: glow 0.7s alternate infinite;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 24px #00ffd055, 0 0 16px #fff3; }
+      100% { box-shadow: 0 0 48px #19faffcc, 0 0 32px #fff8; }
+    }
+    .character img {
+      width: 220px; height: auto; display: block; border-bottom: 2px solid #00ffd0;
+      background: #fff;
+    }
+    .name {
+      font-weight: bold;
+      font-size: 1.35rem;
+      padding: 12px 0;
+      background: linear-gradient(90deg, #19faff 10%, #fff 50%, #19faff 90%);
+      color: #151b24;
+      letter-spacing: 0.12em;
+      font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+      text-shadow: 0 1px 8px #fff7;
+    }
+    @media (max-width: 750px) {
+      .container { flex-direction: column; align-items: center; gap: 28px; }
+      .character img { width: 85vw; max-width: 280px;}
+    }
   </style>
 </head>
 <body>
+  <!-- パーティクルJS用レイヤー -->
+  <div id="particles-js"></div>
   <h1>キャラクターを選んでね！</h1>
   <div class="container">
     <div class="character" onclick="selectCharacter('シャオラン', 'shaoran_web.PNG')">
@@ -29,14 +106,43 @@
       <img src="janome..PNG" alt="ジャノメ">
       <div class="name">ジャノメ</div>
     </div>
-    </div>
-
+  </div>
   <script>
     function selectCharacter(name, image) {
       localStorage.setItem("selectedName", name);
       localStorage.setItem("selectedImage", image);
       window.location.href = "stage.html";
     }
+  </script>
+  <!-- particles.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    /* 軽くキラキラ光の粒アニメーション */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 64, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": ["#19faff", "#fff", "#c7f4ff"] },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.48, "random": true },
+        "size": { "value": 4, "random": true },
+        "line_linked": { "enable": false },
+        "move": {
+          "enable": true,
+          "speed": 0.8,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out"
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "repulse" }
+        }
+      },
+      "retina_detect": true
+    });
   </script>
 </body>
 </html>
